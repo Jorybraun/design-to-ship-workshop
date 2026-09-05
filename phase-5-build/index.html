@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Phase 5 of Design to Ship: manage context, hand off safely, build one approved ticket, review evidence and reconcile document drift.">
+  <title>Phase 5 · Build + review — Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, .72); --ink-faint: rgba(26, 26, 26, .66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .compare > *, .section-intro > * { min-width: 0; }
+    .hero-left h1 { max-width: 12ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: .78rem; }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    a { text-underline-offset: 4px; }
+    .notice { padding: var(--rhythm); border-top: 1px solid var(--hairline); background: var(--ground-2); }
+    .section-intro h2 { max-width: 18ch; }
+    .walkthrough { padding: 0; }
+    details { border-bottom: 1px solid var(--hairline); min-width: 0; }
+    summary { cursor: pointer; padding: var(--rhythm); font-weight: 500; }
+    summary::marker, details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p, .detail-body pre + p { margin-top: 14px; }
+    .detail-body pre { padding: 16px; margin-top: 14px; background: var(--ground); border: 1px solid var(--hairline); }
+    .detail-body ul, .notes ul { padding-left: 20px; }
+    .notes { display: flex; flex-direction: column; gap: 24px; }
+    .notes h3, .compare-cell h3 { margin: 12px 0; }
+    pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .86rem; line-height: 1.65; }
+    code, .sources a, .prompt-block { overflow-wrap: anywhere; }
+    .prompt-block { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .copy-status { min-height: 1.6em; padding: 0 var(--rhythm) 12px; font-size: .85rem; color: var(--ink-soft); }
+    .checklist { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checklist legend { padding: var(--rhythm); font-weight: 500; }
+    .checklist label { display: flex; gap: 14px; padding: 16px var(--rhythm); border-top: 1px solid var(--hairline); cursor: pointer; align-items: start; }
+    .checklist input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { background: var(--ground); }
+    .completion { display: flex; flex-direction: column; gap: 18px; }
+    .completion h3 { font-size: 1.8rem; line-height: 1.2; }
+    progress { width: 100%; height: 8px; accent-color: var(--accent); }
+    .sources { padding: var(--rhythm) var(--rhythm) var(--rhythm) 42px; }
+    .sources li { padding: 8px 0; }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: .85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
+      .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson</a>
+  <header class="outer"><nav class="nav container" aria-label="Lesson navigation">
+    <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
+    <ul class="nav-links"><li><a href="#walkthrough">Practice</a></li><li><a href="#context">Context</a></li><li><a href="#handoffs">Handoff</a></li><li><a href="#prompts">Prompts</a></li></ul>
+  </nav></header>
+  <main class="outer" id="main"><div class="container">
+    <ol class="phase-path" aria-label="Workshop phases">
+      <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+      <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+      <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+      <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+      <li aria-current="step">05 / Build</li>
+      <li><a href="../phase-6-ship/index.html">06 / Ship</a></li>
+    </ol>
+    <section class="hero" aria-labelledby="lesson-title"><div class="hero-grid">
+      <div class="hero-left"><div class="eyebrow">Phase 05 · Build + review</div><h1 id="lesson-title">Build one slice.<br>Review the evidence.</h1><p class="lead">Give a fresh session a reliable starting point. Implement one approved ticket, inspect what changed, and keep the documents honest.</p></div>
+      <div class="hero-right"><div class="pad"><ul class="hero-list"><li><span>Bring</span><span>Approved inputs + actual assets</span></li><li><span>Practice</span><span>Handoff → intake → one ticket</span></li><li><span>Inspect</span><span>Tests, browser, diff, document drift</span></li><li><span>Optional</span><span>Cloud handoff + stacked PRs</span></li><li><span>Leave with</span><span>Evidence or explicit blockers</span></li></ul></div><p class="hero-statement">A summary is <em>not a source of approval.</em></p><div class="hero-links"><a class="hero-link hero-link--primary" href="#walkthrough">Start the practice <span aria-hidden="true">→</span></a><a class="hero-link" href="#context">Understand context <span aria-hidden="true">→</span></a></div></div>
+    </div><p class="notice"><strong>Choose real work or a dry rehearsal.</strong> Teaching documents are illustrative and unapproved; actual conference assets were not generated. Missing real inputs means chat-only practice, not permission to invent them. Reading this lesson or checking boxes changes no code or tracker.</p></section>
+    <section class="section" id="walkthrough" aria-labelledby="walkthrough-title">
+      <div class="section-intro"><div><div class="eyebrow">01 · Say / do / decide</div><h2 id="walkthrough-title">A small, repeatable loop.</h2></div><p>Core path: reviewed handoff → fresh read-only intake → explicit one-ticket build → evidence review → separately authorized correction → document proposals. Dry rehearsal stops before execution.</p></div>
+      <div class="flow-detail"><div class="flow-detail-left walkthrough">
+        <details open><summary>01 / Choose the project, not just a conversation</summary><div class="detail-body"><p><strong>Say:</strong> “We are building one approved slice, not everything ever mentioned.”</p><p><strong>Do:</strong> locate actual approved spec, design, assets, specimen/prototype, architecture, ticket and application directory. Record versions and approval evidence. <code>website/</code> is the workshop reference, not the conference app.</p><p><strong>Decide:</strong> real approved inputs, or fictional chat-only rehearsal with the <a href="../phase-4-plan/PLAN.md">candidate T1 plan</a>? T1 is landing, shared navigation, explicit destination shells, fallback and canonical fixtures—not completed destination features. <strong>Stop:</strong> missing real assets blocks a real build; it does not block learning.</p></div></details>
+        <details><summary>02 / Prepare a handoff the next session can question</summary><div class="detail-body"><p><strong>Say:</strong> “The next agent needs evidence, not confidence.”</p><p><strong>Do:</strong> inspect <code>/context</code>; consider compaction or a fresh session. Authorize a bounded read scope. <strong>Paste:</strong> <a href="#handoff-prompt">Prompt 1</a> in the current session. For a dry rehearsal, discuss the <a href="#expected-handoff">illustrative handoff</a> without tools.</p><p><strong>Expect:</strong> actual references/statuses, current revision and tracked/untracked work, scope, results, blockers and permission ledger. <strong>Check:</strong> challenge unsupported “approved”, “clean” or “passed” claims. Review sensitive material privately.</p><p><strong>Decide:</strong> approve handoff contents for the recipient; save/share only by a separately agreed action. This does not authorize a build or cloud launch.</p></div></details>
+        <details><summary>03 / Start fresh; catch the stale claim</summary><div class="detail-body"><p><strong>Say:</strong> “Read the sources before trusting the summary.”</p><p><strong>Do:</strong> open a fresh local session in the intended project; supply the reviewed handoff and accessible references. <strong>Paste:</strong> <a href="#intake-prompt">Prompt 2</a> with read-only scope. In rehearsal, discuss the expected reply instead of running tools.</p><p><strong>Expect:</strong> goal, AC, exclusions, actual revision/changes, contradictions and setup/access gaps. <strong>Check:</strong> try the <a href="#document-rot">fictional stale-claim drill</a>. The receiver should challenge it, not implement it.</p><p><strong>Stop:</strong> review findings and missing approvals before execution. <a href="#cloud">Cloud handoff</a> is a separate optional launch decision.</p></div></details>
+        <details><summary>04 / Authorize one ticket; inspect the result</summary><div class="detail-body"><p><strong>Say:</strong> “Permission names a ticket, directory, approved version and command boundary.”</p><p><strong>Decide:</strong> authorize exact setup/verification commands and allowed generated outputs, then enter execution mode. <strong>Paste:</strong> <a href="#build-prompt">Prompt 3</a> only after approval. The rehearsal predicts evidence and stops before execution.</p><p><strong>Expect:</strong> reuse of approved assets; a relevant failing test first where infrastructure exists; scoped implementation; real results. Missing test infrastructure is a gap, not permission to install it. Preserve unrelated tracked and untracked work.</p><p><strong>Check:</strong> test output, browser states at 1440px/375px, keyboard/focus, console, relevant routes/reload, and diff against AC. Name revision, working-tree state and environment. T1 is not an all-route AC1 pass.</p><p><strong>Stop:</strong> before scope additions, unapproved setup/config/install, Git mutations, PRs, tracker writes, cloud launches or deployment. No personal data or RSVP requests/persistence.</p></div></details>
+        <details><summary>05 / Review first; authorize corrections separately</summary><div class="detail-body"><p><strong>Say:</strong> “Can someone reproduce this finding?” <strong>Paste:</strong> <a href="#review-prompt">Prompt 4</a> with the actual diff range and evidence.</p><p><strong>Expect:</strong> prioritized criterion, actual versus expected, reproduction and evidence. Review is read-only; only explicitly agreed non-mutating commands. Tests writing caches, snapshots or reports need separate permission. Inspect only an approved browser target and interactions.</p><p><strong>Check:</strong> an illustrative finding: “At 375px the landing CTA overflows; AC8 expects no horizontal scrolling. Reproduce with the long approved label.” This is an example, not observed evidence.</p><p><strong>Decide:</strong> authorize a specific correction separately, then recheck affected states and diff. Optional Devin Review assists only if configured; it is not approval. <strong>Stop:</strong> no automatic fix, posted review, merge or issue completion.</p></div></details>
+        <details><summary>06 / Reconcile sources, not just chat history</summary><div class="detail-body"><p><strong>Say:</strong> “Which source is wrong, and who approved the change?” <strong>Paste:</strong> <a href="#reconcile-prompt">Prompt 5</a>.</p><p><strong>Expect:</strong> chat-only proposals distinguishing defects, already-approved decisions needing propagation, and new decisions. <strong>Check:</strong> affected source and derivative documents/ticket, exact wording, status, evidence timestamp, revision and downstream rechecks.</p><p><strong>Decide:</strong> authorize exact document updates and targets only if wanted; inspect their diff afterward. Never rewrite a spec just to fit code. <strong>Stop:</strong> otherwise leave proposals in chat. MCP status updates need separate target/write approval.</p></div></details>
+        <details><summary>07 / Optional: package the reviewed slice as a normal PR</summary><div class="detail-body"><p><strong>Say:</strong> “A pull request is a review request, not proof that a task is complete.”</p><p><strong>Do:</strong> request a proposed title/body in chat with the ticket, repository, base/head branches, diff summary, tests, browser evidence and limitations. Verify it contains only the approved slice and reviewed document updates.</p><p><strong>Decide:</strong> separately authorize exact commit/branch/push and draft-PR actions and target if publication is wanted; keep merge and deployment excluded. Without repository access, finish with a local diff review.</p><p><strong>Check:</strong> inspect the actual returned PR link, base/head, diff, CI and review status. Required checks and branch protections still apply. <strong>Stop:</strong> no automatic merge or issue completion. Propose the exact evidence-backed tracker update for its own approval.</p></div></details>
+      </div><div class="flow-detail-right notes">
+        <div><div class="eyebrow">A useful finish</div><h3>“Blocked” can be correct.</h3><p>The <a href="../phase-3-prototype/DESIGN.md">example design handoff</a> does not contain generated assets. A fresh agent noticing that gap has improved the handoff—not failed the exercise.</p></div>
+        <div><div class="eyebrow">Evidence over narrative</div><h3>Passed on which revision?</h3><p>A test result without its command, environment and revision is hard to reuse. A screenshot of yesterday’s preview is not today’s browser verification.</p></div>
+        <div><div class="eyebrow">One bounded change</div><h3>Do not grow the ticket.</h3><p>Fixing a reviewed T1 finding does not authorize schedule filters, RSVP or deployment. Record the next decision instead of guessing it.</p></div>
+      </div></div>
+    </section>
+    <section class="section" id="context" aria-labelledby="context-title">
+      <div class="section-intro"><div><div class="eyebrow">02 · Context is finite</div><h2 id="context-title">Keep the right things in view.</h2></div><p>Tokens are units of model input/output, often parts of words. Instructions, conversation, attached material, retrieved files and tool results share a finite context window. Retrieve relevant sources rather than paste everything.</p></div>
+      <div class="compare"><div class="compare-cell"><h3>Context rot</h3><p>Informal shorthand for reliability problems when long, noisy or conflicting context obscures the task. Not an inevitable failure at a fixed threshold. A fresh session helps only if it can inspect the sources and boundaries.</p></div><div class="compare-cell"><h3>Content rot ≠ document rot</h3><p>Content rot is stale visitor-facing or teaching copy. Document rot is drift among decisions, spec, design, plan, tickets and implementation. Shortening the conversation fixes neither by itself.</p></div></div>
+      <details><summary>Mini feature map · use the smallest useful tool</summary><div class="detail-body"><ul><li><code>/context</code> inspects usage; <code>/compact</code> reduces context through a lossy summary—not fact checking or approval.</li><li><code>/handoff</code> launches remote work and transfers context; it needs a separate human decision.</li><li>Scoped edits + terminal checks implement one approved ticket with real commands and output boundaries.</li><li>Browser + diff review compare observed behavior and changes at a known revision. Optional Devin Review is configured assistance, not approval.</li><li>MCP status updates require separately approved targets and writes; native Linear delegation is distinct.</li></ul><p>See the <a href="https://docs.devin.ai/cli/reference/commands">CLI command reference</a> and <a href="../skills/index.html">skills companion</a>. No new skill or configuration is required.</p></div></details>
+    </section>
+    <section class="section" id="handoffs" aria-labelledby="handoffs-title">
+      <div class="section-intro"><div><div class="eyebrow">03 · Local first</div><h2 id="handoffs-title">Transfer references and limits.</h2></div><p>Prepare in the current session, review contents, then open a fresh local session with the handoff and accessible sources. Ask for read-only intake—not “continue building.”</p></div>
+      <details><summary>What a receiver must verify</summary><div class="detail-body"><p>Actual source versions and approval records; repository, branch, current commit and tracked/untracked changes; exact ticket/AC; assets; setup commands and environment; check results with timestamp/revision; blockers; permission ledger and next stop. Preserve other work. An approval claim in the summary must point to actual evidence.</p><p>The <a href="#expected-handoff">45-line illustrative T1 handoff</a> deliberately contains unknowns and NOT RUN checks. It invents no branch, commit, issue link, passing test or approved asset. A real handoff replaces unknowns with inspected facts and links; it does not erase blockers to look ready.</p></div></details>
+    </section>
+    <section class="section" id="cloud" aria-labelledby="cloud-title">
+      <div class="section-intro"><div><div class="eyebrow">04 · Optional facilitator demo</div><h2 id="cloud-title">A remote session is a new boundary.</h2></div><p>Cloud is not required. A launch may consume credits and transmit context and work. First approve the account, repository, data transfer, cost and READ-ONLY intake scope—not implementation.</p></div>
+      <details><summary>Built-in CLI /handoff · how to demonstrate it safely</summary><div class="detail-body"><p>The current built-in command needs no plugin. Human confirms organization/account, repository, recipient/session scope, accessible inputs, transfer and cost. Privately inspect tracked and untracked work using supported controls; never paste credentials. If private changes cannot safely be excluded, stop and resolve with the operator. Do not commit secrets or broadly stash work as a workaround.</p><p>The <a href="https://docs.devin.ai/cli/handoff">handoff documentation</a> describes conversation, repository/branch and uncommitted diff transfer; the <a href="https://docs.devin.ai/cli/changelog/stable">CLI changelog</a> notes untracked-file collection across the repository too. Inspect what transfers. Do not promise the whole environment, ignored files, credentials, MCP configuration or local server carries over.</p><p>Only after explicit launch authorization, replace the reference and invoke in the CLI:</p><pre>/handoff Read the reviewed handoff at [accessible reference]. Verify repository, branch, transferred changes, ticket, and setup/access gaps. Report findings and stop before implementation.</pre><p><strong>Do not run this because the lesson shows it.</strong> Avoid bare <code>/handoff</code>: without arguments it can automatically continue the task. Record an actual session link only after a successful authorized launch. In the received session, use <a href="#intake-prompt">Prompt 2</a> to verify revision, received tracked/untracked work, inputs, approvals and setup/access gaps. Stop before implementation.</p></div></details>
+      <details><summary>Manual delegation and receiving remote work back</summary><div class="detail-body"><p>Manual cloud delegation is a separate path: deliberately provide an accessible repository revision and artifacts after account/access/cost approval. Uncommitted laptop files are not automatically available without transfer. Verify received state; do not assume local setup or integrations exist remotely.</p><p>For either route, prevent concurrent local/remote edits to the same ticket/branch. Revalidate returned PRs and evidence against the current revision before local use. A remote PR does not synchronize your laptop. No blind cherry-pick or merge.</p><p>Native Linear integration can delegate when configured; MCP exposes scoped tools. They are distinct. Creating an issue does not itself authorize an agent to start; inspect existing automation before approved tracker writes.</p></div></details>
+    </section>
+    <section class="section" id="document-rot" aria-labelledby="rot-title">
+      <div class="section-intro"><div><div class="eyebrow">05 · A practical dry drill</div><h2 id="rot-title">Catch one stale sentence.</h2></div><p>A handoff can be tidy and wrong. Use this deliberately fictional claim to practice contradicting a summary with a source—not changing the source to match the summary.</p></div>
+      <div class="compare"><div class="compare-cell"><div class="eyebrow">Deliberately stale handoff line</div><h3>“RSVP sends confirmation email”</h3><p>Discuss in chat only. No repository edits, network calls, personal data or tracker changes. RSVP implementation is outside candidate T1.</p></div><div class="compare-cell"><div class="eyebrow">Expected intake catch</div><h3>D2 / I6 say demo-only.</h3><p>Compare <a href="../phase-2-spec/SPEC.md">the example spec</a>: no sending and no persistence. Propose: “RSVP is demo-only; nothing is sent or saved.” Flag the conflict and request review. The teaching decision is not real project approval.</p></div></div>
+      <details><summary>Give each source a job · avoid duplicate truth</summary><div class="detail-body"><ul><li><strong>SPEC.md:</strong> intended product behavior and exclusions.</li><li><strong>Design sources + DESIGN.md:</strong> visual decisions, reusable assets and limitations.</li><li><strong>Plan + Linear ticket:</strong> current slice, dependencies and acceptance-criteria references.</li><li><strong>Code + verification evidence:</strong> actual implementation and observations, not automatic product approval.</li><li><strong>AGENTS.md:</strong> stable conventions and verified commands, not every temporary status.</li><li><strong>Session handoff:</strong> current work, evidence references, blockers and the next bounded action.</li></ul><p>Link instead of copying whole documents into every ticket. Identify the owner/source, version and status; review affected references when decisions change. Preserve historical results under their original revision rather than relabeling them as current. Neither code nor documentation is automatically right when they disagree.</p></div></details>
+      <details><summary>After implementation · reconcile without erasing disagreement</summary><div class="detail-body"><p>With <a href="#reconcile-prompt">Prompt 5</a>, identify the governing decision, actual behavior and every affected source/derivative: spec, design, plan, ticket, handoff or visitor copy. Propose exact wording with status, timestamp, revision and evidence. If behavior is wrong, propose a code correction; if a decision changed, require its approval record. Ask which source governs if authorities conflict.</p><p>Authorize exact updates only if wanted, then inspect the diff and downstream references. A shorter chat is not document maintenance. A stale sentence shown to visitors is content rot; a conflicting ticket is document rot too.</p></div></details>
+    </section>
+    <section class="section" id="stacked-prs" aria-labelledby="stack-title">
+      <div class="section-intro"><div><div class="eyebrow">06 · Optional, after the core loop</div><h2 id="stack-title">Stack only when it helps review.</h2></div><p>Default to one ordinary PR for one slice. Use <a href="#stack-prompt">Prompt 6</a> for a read-only proposal—not permission to create branches, PRs or merges.</p></div>
+      <details><summary>One schedule ticket, two dependent review layers</summary><div class="detail-body"><pre>main -> PR A: render schedule -> PR B: filter and empty states</pre><p>A owns base rendering and tests using T1's canonical fixtures. B adds filter/empty-state tests and checks final combined behavior. Neither layer duplicates the shared fixture source. Resolve I2 empty-state precedence first. A lower-layer change requires an upper-layer recheck.</p><p><a href="https://docs.devin.ai/work-with-devin/stacked-prs">Native Devin stacks</a> are first-class GitHub.com stacks, not an ordinary dependent branch chain or a feature guaranteed in every CLI/repository. Native merge includes the selected layer and all open layers below atomically, then auto-retargets remaining layers. Regular merge is not that native operation. Verify support; use sequential ordinary PRs otherwise. This lesson creates or merges no PRs.</p></div></details>
+    </section>
+    <section class="section" id="prompts" aria-labelledby="prompts-title">
+      <div class="section-intro"><div><div class="eyebrow">07 · Copy only what you need</div><h2 id="prompts-title">Six bounded prompts.</h2></div><p>Replace placeholders with reviewed, accessible references. Prompts do not grant themselves permission. <a href="PROMPT.md">Download all six</a>; <a href="LESSON.md">facilitator script</a>. For rehearsal, discuss the prompts in chat without execution.</p></div>
+      <details><summary>1 / Prepare the handoff · current session, chat only</summary><div class="prompt-block"><pre id="handoff-prompt" tabindex="-1">Prepare a fresh-session handoff in chat only for [exact ticket] in [authorized project directory]. Inspect only [authorized inputs and repository]. Reference [authoritative spec, design, assets, plan and ticket versions] rather than duplicating their full contents. Identify their actual approval statuses and supporting references; distinguish inspected facts, proposals, and explicit human approvals. A summary is not approval.
+
+Record the repository, current branch and commit, tracked modifications and untracked work, without exposing secrets or changing Git state. Identify other people's work to preserve. State the candidate scope, exclusions, acceptance criteria references, blockers, and permission ledger. For each check, give the actual result, command, revision, environment and evidence timestamp; use NOT RUN or unknown where appropriate. Do not invent passing tests, assets, issue IDs, or a clean tree.
+
+Name the next permitted action as read-only intake and its stop condition. Flag stale or conflicting claims for human review. Do not edit files, mutate Git, launch cloud work, or update a tracker. Stop for review of the handoff contents.</pre></div></details>
+      <div class="prompt-bar"><span>Prepare → review contents</span><button class="btn btn--small" type="button" data-copy="handoff-prompt" aria-describedby="handoff-status" hidden>Copy handoff prompt</button></div><p class="copy-status" id="handoff-status" role="status"></p>
+      <details><summary>2 / Fresh-session intake · verify, then stop</summary><div class="prompt-block"><pre id="intake-prompt" tabindex="-1">Perform read-only intake for [exact ticket] using [reviewed handoff reference] in [local session or already-authorized cloud session]. Inspect only [authorized repository/directory and source references]. Verify the actual repository, branch, current commit, tracked changes and untracked work against the handoff; report absent or additional work. Reopen the authoritative spec, design, assets, plan and ticket at [approved versions], checking actual statuses and approval evidence rather than trusting the summary.
+
+Recite the goal, acceptance criteria, exclusions, dependencies, blockers and permission ledger. Identify contradictions, stale claims, inaccessible artifacts, and any missing assets. Inspect documented setup and verification commands without executing them. For cloud intake, confirm the intended organization/account, repository access, received changes, and required integrations without exposing secrets; do not assume local environment or MCP connections transferred.
+
+Report what is known, unknown, and required before a build. Do not edit files, run tests or setup, install anything, change configuration, mutate Git, call tracker writes, or launch another session. Stop and ask for explicit one-ticket execution authorization.</pre></div></details>
+      <div class="prompt-bar"><span>New local or authorized cloud session</span><button class="btn btn--small" type="button" data-copy="intake-prompt" aria-describedby="intake-status" hidden>Copy intake prompt</button></div><p class="copy-status" id="intake-status" role="status"></p>
+      <details><summary>3 / One-ticket build · explicit execution permission required</summary><div class="prompt-block"><pre id="build-prompt" tabindex="-1">I authorize implementation of [exact ticket] only in [directory], using [approved version of spec, design, assets, plan and ticket]. The permitted setup commands are [permitted setup commands, or none]; the approved verification commands are [exact commands and allowed generated outputs]. Confirm these boundaries against the reviewed intake before editing. Stop if required inputs or approvals are missing.
+
+Reuse the actual approved assets and existing project patterns. Discover real commands from the project, not guessed scripts. Where test infrastructure exists, add or adjust a relevant test and demonstrate its expected failure before implementation; otherwise report the gap without installing a framework. Implement only this ticket's acceptance criteria, preserving unrelated tracked and untracked work. Use fictional data only; no personal data or RSVP network requests or persistence.
+
+Run authorized checks, inspect relevant states at 1440px and 375px, keyboard behavior and console errors, then review the diff. Report evidence, revision and environment, including failures and NOT RUN checks. Stop before scope additions, unapproved setup/configuration/install, commits, branches, pushes, PRs, cloud launches, tracker writes or deployment.</pre></div></details>
+      <div class="prompt-bar"><span>Not for the dry rehearsal</span><button class="btn btn--small" type="button" data-copy="build-prompt" aria-describedby="build-status" hidden>Copy build prompt</button></div><p class="copy-status" id="build-status" role="status"></p>
+      <details><summary>4 / Review · findings, not automatic fixes</summary><div class="prompt-block"><pre id="review-prompt" tabindex="-1">Review [exact ticket] read-only in [authorized directory] against [approved acceptance criteria, spec and design versions]. Inspect [base revision] to [current revision plus identified working-tree changes], preserving other work. Compare the actual diff with the approved scope and exclusions. Review [test output and browser evidence references] for the same revision and environment; distinguish observations from unverified claims.
+
+Use only [explicitly agreed non-mutating check commands, or none]. Do not rerun tests that create files, caches or snapshots under this permission. If more execution or evidence is needed, propose it and stop for separate authorization. Inspect [approved browser target] only within its agreed local, fictional-data interactions; do not assume a remote preview matches this revision.
+
+Give prioritized, actionable feedback: criterion, file or state, actual versus expected behavior, reproduction steps, and supporting evidence. Include responsive, keyboard, privacy and console findings where relevant. Mark gaps NOT VERIFIED, never fabricate a pass or merge approval. Do not edit files, fix findings, mutate Git, publish review comments, or update tickets. Stop with recommendations for a separately authorized correction.</pre></div></details>
+      <div class="prompt-bar"><span>Approve corrections separately</span><button class="btn btn--small" type="button" data-copy="review-prompt" aria-describedby="review-copy-status" hidden>Copy review prompt</button></div><p class="copy-status" id="review-copy-status" role="status"></p>
+      <details><summary>5 / Reconcile documents · propose exact changes in chat</summary><div class="prompt-block"><pre id="reconcile-prompt" tabindex="-1">Compare [authoritative decision/spec references and approved versions] with [design/assets references], [plan and exact ticket], and [implementation revision plus identified working-tree changes]. Use only [authorized read-only sources and evidence]. Propose document reconciliation in chat only; do not apply changes. Distinguish stale visitor or teaching content from disagreement between specification, design, tickets and implementation.
+
+For each discrepancy, state the source requirement, actual implementation or claim, evidence, and affected source and derivative documents or ticket fields. Identify whether the implementation needs correction, an already-approved decision needs propagation, or a new product decision is required. Never silently rewrite the specification to fit the code or treat a summary as approval. If authoritative sources conflict, ask the human which decision governs.
+
+Propose exact replacement wording with status, evidence timestamp, revision and environment where relevant. Preserve unknown, failed and NOT RUN statuses honestly. List downstream references to recheck and any remaining blockers. Request approval for the exact updates and targets before applying anything. No file, tracker, Git, configuration or cloud changes. Stop with the reconciliation proposal.</pre></div></details>
+      <div class="prompt-bar"><span>No silent spec rewrite</span><button class="btn btn--small" type="button" data-copy="reconcile-prompt" aria-describedby="reconcile-status" hidden>Copy reconcile prompt</button></div><p class="copy-status" id="reconcile-status" role="status"></p>
+      <details><summary>6 / Optional stack · a read-only proposal</summary><div class="prompt-block"><pre id="stack-prompt" tabindex="-1">Prepare a read-only proposal for [one approved schedule ticket] in [authorized repository] using [approved plan, design, acceptance criteria and current revision]. Default to one ordinary PR; explain whether two dependent review layers would genuinely help. Do not implement anything or create branches or PRs.
+
+If useful, propose main -&gt; PR A: render schedule -&gt; PR B: filter and empty states. This is one ticket split across two PRs, not independent features. Map acceptance criteria, scope and tests to each layer; keep shared fixtures owned once. Explain how changes to the lower layer require rechecking the upper layer and how reviewers verify the final combined behavior. Identify unresolved empty-state precedence as a blocker if not approved.
+
+Verify the proposed tooling: native Devin stacks are GitHub.com-only, not every CLI or repository, and not an ordinary dependent branch chain. Native merging includes the selected layer and all open layers below atomically, then retargets remaining layers; regular merge is different. Report access/support gaps, suggest a sequential fallback, and stop for human review. No Git mutations, remote actions, merges or tracker changes.</pre></div></details>
+      <div class="prompt-bar"><span>Default: one ordinary PR</span><button class="btn btn--small" type="button" data-copy="stack-prompt" aria-describedby="stack-status" hidden>Copy stack prompt</button></div><p class="copy-status" id="stack-status" role="status"></p>
+      <details><summary>Illustrative output · T1 handoff, not implementation approval</summary><div class="prompt-block"><pre id="expected-handoff" tabindex="-1"># DesignCraft — Illustrative T1 handoff
+
+Status: fictional rehearsal; not a project approval or execution record.
+Prepared at: not recorded; a real handoff must include its evidence timestamp.
+T1 is a local teaching ticket, not a talk ID or a live Linear issue.
+
+## Available teaching references
+- ../phase-2-spec/SPEC.md: illustrative, awaiting human review; D2/I6 prohibit sending or persistence.
+- ../phase-3-prototype/DESIGN.md: illustrative; actual assets, specimen and prototype not generated.
+- ../phase-4-plan/PLAN.md: fictional, unapproved; T1 is a candidate first slice.
+These statuses belong to teaching documents, not the participant's project.
+
+## Actual project inputs
+- Approved spec/version and approval record: unknown; inspect supplied reference.
+- Approved design/version, assets, specimen and prototype: unknown; inspect actual artifacts.
+- Approved architecture, hosting, ticket and AC versions: unknown; not approved here.
+- Real handoff must link each actual source, version, status and human approval evidence.
+- Do not infer permission from a summary or substitute workshop website/ for the application.
+
+## Repository snapshot
+- Authorized application directory/repository: unknown; ask the human.
+- Branch and current commit: unknown; inspect during authorized read-only intake.
+- Tracked modifications: unknown; inspect and preserve unrelated work.
+- Untracked files: unknown; inspect privately for sensitive material before sharing.
+- Remote session, branch, PR or Linear issue links: none established by this example.
+
+## Candidate T1 scope, not authorization
+- Landing: approved fictional event details and notice; CTA targets /rsvp.
+- Shared navigation, explicitly unfinished destination shells, unknown-path home fallback.
+- One canonical local fixture source: six speakers, eight talks; check references.
+- References: PLAN.md T1; SPEC.md R1/R5/D3, AC2 and initial AC1/AC8/AC9/AC10.
+- Exclude completed schedule, speakers, RSVP, deployment and an all-route pass claim.
+
+## Evidence and blockers
+- Automated tests/build/lint: NOT RUN; commands, revision and environment unknown.
+- Browser 1440px/375px, keyboard, console, route/reload checks: NOT RUN.
+- Diff review: NOT RUN; no inspected application revision or evidence timestamp.
+- Blockers: missing actual approved inputs/assets, target directory, architecture and setup permissions.
+- Later T2 blocker: I2 empty-state precedence needs a human decision; not resolved by this handoff.
+
+## Permission ledger and next action
+- No execution approved: no implementation, setup, tests, installs or configuration changes.
+- No Git mutations, cloud launch, tracker writes, PR, merge or deployment approved.
+- Next permitted step after the human supplies access scope: READ-ONLY intake; report contradictions.
+- Stop after intake. Handoff-content approval is not build approval; request exact one-ticket permission.
+</pre></div></details>
+      <div class="prompt-bar"><a href="HANDOFF.md" download>Download illustrative HANDOFF.md</a><button class="btn btn--small" type="button" data-copy="expected-handoff" aria-describedby="example-status" hidden>Copy example handoff</button></div><p class="copy-status" id="example-status" role="status"></p>
+    </section>
+    <section class="section" id="checklist" aria-labelledby="checklist-title">
+      <div class="section-intro"><div><div class="eyebrow">08 · Review checkpoint</div><h2 id="checklist-title">What can the next person trust?</h2></div><p>Record real evidence or rehearsal blockers. These checkboxes do not inspect files, grant permission, change code or update a tracker. A dry drill may finish with no implementation.</p></div>
+      <div class="flow-detail"><fieldset class="checklist"><legend>Confirm your review, not automatic readiness</legend>
+        <label><input type="checkbox" autocomplete="off">Actual input statuses are known, or missing approvals/assets are explicitly recorded.</label>
+        <label><input type="checkbox" autocomplete="off">Handoff contents, references, current revision and tracked/untracked work were reviewed, or marked unknown in rehearsal.</label>
+        <label><input type="checkbox" autocomplete="off">Read-only intake recites boundaries and challenges the stale claim without editing sources.</label>
+        <label><input type="checkbox" autocomplete="off">One-ticket execution and command boundaries are explicit; rehearsal stops before execution.</label>
+        <label><input type="checkbox" autocomplete="off">Tests, 1440px/375px browser, keyboard, console and diff evidence name revision/environment, or are NOT RUN.</label>
+        <label><input type="checkbox" autocomplete="off">Review feedback is reproducible; any corrections require separate authorization and rechecks.</label>
+        <label><input type="checkbox" autocomplete="off">Document drift proposals identify affected sources, evidence and the next approval/stop boundary.</label>
+      </fieldset><div class="flow-detail-right completion"><div class="eyebrow">Your review</div><progress id="review-progress" max="7" value="0" aria-label="Checklist completion" hidden></progress><p id="review-status" role="status">Review the evidence and record blockers.</p><h3 id="next-title">First, review the slice.</h3><p>Next: decide the exact correction, document update or further ticket to authorize. A handoff is not permission to continue indefinitely.</p><p class="muted">Selections reset on reload. <a href="../phase-6-ship/index.html">Continue to Phase 6 · Ship + handoff</a>; opening it does not authorize deployment. Nothing here launches sessions or changes issue status.</p></div></div>
+    </section>
+    <details><summary>Primary sources and facilitator materials</summary><ul class="sources">
+      <li><a href="LESSON.md">Facilitator walkthrough and optional demonstrations</a></li>
+      <li><a href="https://docs.devin.ai/cli/reference/commands">Devin CLI: /context, /compact and command reference</a></li>
+      <li><a href="https://docs.devin.ai/cli/handoff">Devin CLI: built-in cloud handoff and transfer boundary</a></li>
+      <li><a href="https://docs.devin.ai/work-with-devin/stacked-prs">Devin: native GitHub.com stacks and merge semantics</a></li>
+      <li><a href="../skills/index.html">Skills companion: questions and review methods</a></li>
+    </ul></details>
+    <footer><div class="footer"><div><h4>Design to Ship</h4><p>Phase 5 · Build + review.<br>One ticket. Evidence before confidence.</p></div><div><h4>Lesson materials</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="LESSON.md">Facilitator script</a></li><li><a href="PROMPT.md">Six bounded prompts</a></li><li><a href="HANDOFF.md">Illustrative handoff</a></li></ul></div><div><h4>Continue reviewing</h4><ul><li><a href="../phase-4-plan/index.html">Back to Phase 4 · Plan</a></li><li><a href="../skills/index.html">Skills companion</a></li><li><a href="../phase-6-ship/index.html">Phase 6 · Ship + handoff</a></li></ul></div></div><div class="footer-bottom"><span>Idea → Spec → Design → Plan → Build + review</span><span>Plain HTML · No automatic execution</span></div></footer>
+  </div></main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const source = document.getElementById(button.dataset.copy);
+        const status = document.getElementById(button.getAttribute('aria-describedby'));
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          status.textContent = 'Copied. Replace placeholders and confirm the scope before using.';
+        } catch {
+          let disclosure = source.closest('details');
+          while (disclosure) {
+            disclosure.open = true;
+            disclosure = disclosure.parentElement.closest('details');
+          }
+          source.focus();
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C to copy.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+    const checks = [...document.querySelectorAll('.checklist input')];
+    const progress = document.getElementById('review-progress');
+    progress.hidden = false;
+    const updateReview = () => {
+      const completed = checks.filter(check => check.checked).length;
+      progress.value = completed;
+      document.getElementById('review-status').textContent = `${completed} of ${checks.length} checks confirmed`;
+      document.getElementById('next-title').textContent = completed === checks.length
+        ? 'Review recorded. Authorize the next step separately.'
+        : 'First, review the slice.';
+    };
+    checks.forEach(check => {
+      check.checked = false;
+      check.addEventListener('change', updateReview);
+    });
+    updateReview();
+  </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Design to Ship: a beginner-friendly workshop about building with an AI coding agent. Six phases from idea to shipped release.">
+  <title>Design to Ship — Build with AI</title>
+  <link rel="icon" type="image/svg+xml" href="website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, 0.72); --ink-faint: rgba(26, 26, 26, 0.66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section, article { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .card-grid > * { min-width: 0; }
+    .hero-left h1 { max-width: 14ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: .78rem; color: var(--ink-soft); }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    .phase-path a { text-underline-offset: 4px; }
+    .section-intro h2 { max-width: 18ch; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--hairline); }
+    .card { min-height: 180px; padding: var(--rhythm); border-right: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); display: flex; flex-direction: column; }
+    .card:nth-child(3n) { border-right: 0; }
+    .card h3 { margin: 12px 0; }
+    .card p { color: var(--ink-soft); font-size: .95rem; margin-top: 6px; flex: 1; }
+    .card .eyebrow { margin-bottom: 8px; }
+    .card .btn { margin-top: 1.25rem; align-self: start; }
+    .source-callout { padding: var(--rhythm); border-top: 1px solid var(--hairline); background: var(--ground-2); }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 960px) {
+      .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card:nth-child(3n) { border-right: 1px solid var(--hairline); }
+      .card:nth-child(2n) { border-right: 0; }
+    }
+    @media (max-width: 620px) {
+      .outer { padding-inline: 10px; }
+      .nav { flex-wrap: wrap; }
+      .nav-brand { flex-basis: 100%; border-right: 0; border-bottom: 1px solid var(--hairline); }
+      .nav-spacer { display: none; }
+      .nav-links { flex-basis: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: .85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
+      .hero-links { grid-auto-flow: row; grid-auto-columns: unset; }
+      .hero-link + .hero-link { border-left: 0; border-top: 1px solid var(--hairline); }
+      .card-grid { grid-template-columns: 1fr; }
+      .card, .card:nth-child(3n), .card:nth-child(2n) { border-right: 0; }
+      .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="outer">
+    <nav class="nav container" aria-label="Workshop navigation">
+      <a class="nav-brand" href="index.html"><img src="website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a>
+      <span class="nav-spacer"></span>
+      <ul class="nav-links">
+        <li><a href="#main">Start</a></li>
+        <li><a href="#phases">Phases</a></li>
+        <li><a href="skills/index.html">Skills</a></li>
+        <li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Source</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="outer" id="main">
+    <div class="container">
+      <ol class="phase-path" aria-label="Workshop phases">
+        <li aria-current="step">Home</li>
+        <li><a href="phase-1-idea/index.html">01 / Idea</a></li>
+        <li><a href="phase-2-spec/index.html">02 / Spec</a></li>
+        <li><a href="phase-3-prototype/index.html">03 / Design</a></li>
+        <li><a href="phase-4-plan/index.html">04 / Plan</a></li>
+        <li><a href="phase-5-build/index.html">05 / Build</a></li>
+        <li><a href="phase-6-ship/index.html">06 / Ship</a></li>
+        <li><a href="skills/index.html">Skills</a></li>
+      </ol>
+      <section class="hero" aria-labelledby="workshop-title">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <div class="eyebrow">Workshop · For designers · 2–3 hours</div>
+            <h1 id="workshop-title">From idea to a shipped site.</h1>
+            <p class="lead">You decide what to build. The AI coding agent asks, executes, verifies, and reports. Learn six clear phases and the prompts that keep you in control.</p>
+          </div>
+          <div class="hero-right">
+            <div class="pad">
+              <ul class="hero-list">
+                <li><span>Human role</span><span>Decide product, spec, design, and boundaries</span></li>
+                <li><span>Agent role</span><span>Interview, structure, plan, implement, verify</span></li>
+                <li><span>Outcome</span><span>A shipped release with evidence you can review</span></li>
+              </ul>
+            </div>
+            <p class="hero-statement">You are the <em>product owner and reviewer.</em></p>
+            <div class="hero-links">
+              <a class="hero-link hero-link--primary" href="phase-1-idea/index.html">Start Phase 1 <span aria-hidden="true">→</span></a>
+              <a class="hero-link" href="README.md">Read the guide <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+        <p class="source-callout"><strong>Teaching only.</strong> The example DesignCraft conference site is an unapproved illustration. Open the prompts, adapt them to your own project, and approve every real action separately.</p>
+      </section>
+
+      <section class="section" id="phases" aria-labelledby="phases-title">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow">01 · Workshop phases</div>
+            <h2 id="phases-title">Six decision points. Six prompts.</h2>
+          </div>
+          <p>Each phase stops for your approval before the agent writes code, publishes tickets, opens pull requests, or deploys.</p>
+        </div>
+        <div class="card-grid">
+          <article class="card">
+            <div class="eyebrow">Phase 01</div>
+            <h3><a href="phase-1-idea/index.html">Idea</a></h3>
+            <p>Audience, one job, scope, exclusions, success, and open questions.</p>
+            <a class="btn btn--small" href="phase-1-idea/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Phase 02</div>
+            <h3><a href="phase-2-spec/index.html">Spec</a></h3>
+            <p>Draft, challenge, revise, and approve a behavioral specification.</p>
+            <a class="btn btn--small" href="phase-2-spec/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Phase 03</div>
+            <h3><a href="phase-3-prototype/index.html">Design</a></h3>
+            <p>Inspect assets, choose reuse/adapt/create, and review a prototype.</p>
+            <a class="btn btn--small" href="phase-3-prototype/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Phase 04</div>
+            <h3><a href="phase-4-plan/index.html">Plan</a></h3>
+            <p>Architecture, slices, tickets, Linear MCP, and exact publication.</p>
+            <a class="btn btn--small" href="phase-4-plan/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Phase 05</div>
+            <h3><a href="phase-5-build/index.html">Build</a></h3>
+            <p>Context, handoff, one-ticket implementation, review, and evidence.</p>
+            <a class="btn btn--small" href="phase-5-build/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Phase 06</div>
+            <h3><a href="phase-6-ship/index.html">Ship</a></h3>
+            <p>Source package, deployment approval, smoke tests, and handoff.</p>
+            <a class="btn btn--small" href="phase-6-ship/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="eyebrow">Companion</div>
+            <h3><a href="skills/index.html">Skills</a></h3>
+            <p>Reusable methods, Matt Pocock’s examples, and our adaptations.</p>
+            <a class="btn btn--small btn--secondary" href="skills/index.html">Open <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="reference" aria-labelledby="reference-title">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow">02 · Reference materials</div>
+            <h2 id="reference-title">Read, copy, and adapt.</h2>
+          </div>
+          <p>The plain HTML lessons need no build. The React site in <code>website/</code> is a teaching reference, not the conference app.</p>
+        </div>
+        <div class="pad">
+          <ul class="hero-list">
+            <li><span>Guide</span><span><a href="README.md">README.md</a></span></li>
+            <li><span>Prompting</span><span><a href="agent-prompting-foundations.md">Agent prompting foundations</a></span></li>
+            <li><span>Workshop flow</span><span><a href="WORKSHOP.md">WORKSHOP.md</a></span></li>
+            <li><span>Source</span><span><a href="https://github.com/Jorybraun/design-to-ship-workshop">Jorybraun/design-to-ship-workshop</a></span></li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer">
+          <div><h4>Design to Ship</h4><p>A workshop about staying in control while you build with an AI agent.</p></div>
+          <div><h4>Start</h4><ul><li><a href="phase-1-idea/index.html">Phase 1 · Idea</a></li><li><a href="skills/index.html">Skills companion</a></li></ul></div>
+          <div><h4>Source</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">GitHub repository</a></li><li><a href="AGENTS.md">AGENTS.md conventions</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><span>Idea → Spec → Design → Plan → Build → Ship</span><span>Plain HTML · No automatic execution</span></div>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

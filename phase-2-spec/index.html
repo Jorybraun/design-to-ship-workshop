@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Phase 2 of Design to Ship: turn an approved idea brief into a checkable specification. Includes a lesson, prompt, expected output, and review checklist.">
+  <title>Phase 2 · Spec — Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, 0.72); --ink-faint: rgba(26, 26, 26, 0.66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .anatomy > *, .compare > * { min-width: 0; }
+    .hero-left h1 { max-width: 12ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    .phase-path a { text-underline-offset: 4px; }
+    .section-intro h2 { max-width: 18ch; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.86rem; line-height: 1.65; margin: 0; }
+    .walkthrough { padding: 0; }
+    details { border-bottom: 1px solid var(--hairline); }
+    summary { cursor: pointer; padding: var(--rhythm); font-weight: 500; }
+    summary::marker, details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p { margin-top: 12px; }
+    .detail-body pre { margin-top: 16px; padding: 16px; background: var(--ground); border: 1px solid var(--hairline); }
+    .facilitator { border-top: 1px solid var(--hairline); }
+    .facilitator blockquote { margin: 0; max-width: 72ch; font-size: 1.1rem; }
+    .prompt-block, .spec-output { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .anatomy-right .detail-body { color: var(--ink-soft); }
+    .eyebrow + h3 { margin-top: 16px; }
+    .notes { display: flex; flex-direction: column; gap: 24px; }
+    .notes h3 { margin-bottom: 8px; }
+    .notes ul { padding-left: 20px; }
+    .source-link { font-size: 0.85rem; text-underline-offset: 4px; }
+    .copy-status { font-size: 0.85rem; min-height: 1.6em; color: var(--ink-soft); padding: 0 var(--rhythm) 12px; }
+    .checklist { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checklist legend { padding: var(--rhythm); font-weight: 500; }
+    .checklist label { display: flex; gap: 14px; padding: 16px var(--rhythm); border-top: 1px solid var(--hairline); cursor: pointer; align-items: start; }
+    .checklist input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { background: var(--ground); }
+    .completion { display: flex; flex-direction: column; gap: 18px; }
+    .completion h3 { font-size: 1.8rem; line-height: 1.2; }
+    progress { width: 100%; height: 8px; accent-color: var(--accent); }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: 0.85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
+      .phase-path li { min-width: 33%; font-size: 0.7rem; padding: 12px; }
+      .hero-left h1 { padding-top: 2.5rem; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson</a>
+  <header class="outer">
+    <nav class="nav container" aria-label="Lesson navigation">
+      <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a>
+      <span class="nav-spacer"></span>
+      <ul class="nav-links">
+        <li><a href="#walkthrough">Walkthrough</a></li>
+        <li><a href="#prompt">Prompt</a></li>
+        <li><a href="#output">Output</a></li>
+        <li><a href="#checklist">Checklist</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="outer" id="main">
+    <div class="container">
+      <ol class="phase-path" aria-label="Workshop phases">
+        <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+        <li aria-current="step">02 / Spec</li>
+        <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+        <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+        <li><a href="../phase-5-build/index.html">05 / Build</a></li>
+        <li><a href="../phase-6-ship/index.html">06 / Ship</a></li>
+      </ol>
+      <section class="hero" aria-labelledby="lesson-title">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <div class="eyebrow">Phase 02 · Product specification</div>
+            <h1 id="lesson-title">Make it<br>checkable.</h1>
+            <p class="lead">You know the purpose and boundaries. Now define what visitors can do, what they see, and how you’ll know it works.</p>
+          </div>
+          <div class="hero-right">
+            <div class="pad"><ul class="hero-list">
+              <li><span>Starting point</span><span>Your reviewed idea brief</span></li>
+              <li><span>Your role</span><span>Resolve behavior and scope</span></li>
+              <li><span>Agent’s role</span><span>Question, structure, cross-check</span></li>
+              <li><span>Outcome</span><span>A reviewed SPEC.md</span></li>
+            </ul></div>
+            <p class="hero-statement">Not more words.<br>Fewer <em>unanswered decisions.</em></p>
+            <div class="hero-links">
+              <a class="hero-link hero-link--primary" href="#walkthrough">Start the walkthrough <span aria-hidden="true">→</span></a>
+              <a class="hero-link" href="#prompt">Get the prompt <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="difference-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">01 · From intention to behavior</div><h2 id="difference-title">A boundary becomes a requirement.</h2></div>
+          <p>Phase 1 defines why the site exists and what is out of scope. Phase 2 describes observable behavior. Still no application code, framework choice, or visual design.</p>
+        </div>
+        <div class="compare">
+          <div class="compare-cell"><div class="eyebrow">The idea brief</div><pre>Visitors browse the schedule and RSVP.
+No payments or accounts.</pre><ul><li>Clear purpose and boundaries</li><li>But how does filtering work?</li><li>Does RSVP send real registrations?</li></ul></div>
+          <div class="compare-cell"><div class="eyebrow">The specification</div><pre>The schedule defaults to All tracks.
+Choosing Product shows only Product talks in time order.
+If none match, show “No talks in this track yet.”</pre><ul><li>A defined starting state</li><li>An action and observable result</li><li>An explicit no-results state</li></ul></div>
+        </div>
+      </section>
+      <section class="section" id="walkthrough" aria-labelledby="walkthrough-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">02 · Guided walkthrough</div><h2 id="walkthrough-title">Resolve. Describe. Review.</h2></div>
+          <p>Bring your approved brief from Phase 1. The examples below illustrate fictional participant answers; they do not replace your own decisions.</p>
+        </div>
+        <div class="flow-detail">
+          <div class="flow-detail-left walkthrough">
+            <details open><summary>01 / Bring the reviewed idea brief</summary><div class="detail-body"><p>Paste your Phase 1 output into the prompt’s reference slot, including unresolved questions. Don’t depend on a fresh agent session remembering the last one.</p><p><a href="../phase-1-idea/index.html#example">Revisit the Phase 1 example →</a></p></div></details>
+            <details><summary>02 / Resolve the RSVP boundary</summary><div class="detail-body"><p>First question: “Should RSVP collect real registrations, or only demonstrate the interaction?”</p><pre>Example answer:
+Demo only. Label it clearly. Do not send or store personal information.</pre><p>This narrows the original RSVP capability. The agent must record the change and ask you to approve it. A real service needs a destination and pending, failure, retry, and success requirements.</p></div></details>
+            <details><summary>03 / Define routes and information</summary><div class="detail-body"><p>For this example: landing, schedule, speakers, and RSVP. Identify what each page needs and how the content connects: every talk must reference a listed speaker.</p><p>Confirm fictional sample content before using it. Don’t add ticket tiers, sponsors, search, or speaker-detail pages by habit.</p></div></details>
+            <details><summary>04 / Specify actions and states</summary><div class="detail-body"><p>Define default filters, empty results, invalid inputs, and demo success. Say when a state does not apply instead of inventing unnecessary behavior.</p><pre>Local demo validation is synchronous.
+No network request means no submission loading or retry state.</pre></div></details>
+            <details><summary>05 / Write an observable check</summary><div class="detail-body"><pre>Given an empty name or invalid email,
+when the visitor submits,
+show the corresponding inline error,
+retain the entries, focus the first invalid field,
+and do not show success.</pre><p>These are future checks, not test results. Choose actual test commands after inspecting the implementation environment.</p></div></details>
+            <details><summary>06 / Review, approve, then save</summary><div class="detail-body"><p>Check the draft against the original boundaries and your answers. Explicitly approve it, then request a project copy of SPEC.md in the agreed application directory. Do not overwrite the teaching example.</p><p><a href="#checklist">Review the completion gate →</a></p></div></details>
+          </div>
+          <div class="flow-detail-right notes">
+            <div><div class="eyebrow">The input</div><h3>Your reviewed brief.</h3><p>Audience, primary job, journey, scope, and open questions. It is a reference, not a suggestion to expand the product.</p></div>
+            <div><div class="eyebrow">The work</div><h3>Decisions with a source.</h3><p>Every requirement should follow from the brief or a confirmed answer. The agent flags changes; you approve them.</p></div>
+            <div><div class="eyebrow">The output</div><h3>A contract for review.</h3><p>Routes, content, interactions, relevant states, acceptance criteria, and exclusions. The status stays “draft” until you approve.</p></div>
+          </div>
+        </div>
+        <div class="pad"><p><strong>Before approving the draft:</strong> try the <a href="../skills/index.html#exercise">Grill one decision exercise</a> in our skills chapter. It explains Matt Pocock’s published method and our one-question workshop adaptation.</p></div>
+        <details class="facilitator"><summary>Facilitator notes · Explain the difference</summary><div class="detail-body"><blockquote>“A brief tells us why we are building. A specification tells us what must happen. We are not asking the agent for a longer document: we are removing decisions it would otherwise have to guess. Could two people independently check this requirement and agree on the result?”</blockquote></div></details>
+      </section>
+      <section class="section" id="prompt" aria-labelledby="prompt-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">03 · The specification prompt</div><h2 id="prompt-title">Ask before drafting.</h2></div>
+          <p>Copy this prompt, replace the bracketed reference with your brief, and answer one question at a time. A missing brief should trigger a question, not a guessed specification.</p>
+        </div>
+        <div class="anatomy">
+          <div class="anatomy-left">
+            <div class="prompt-block"><pre id="spec-prompt" tabindex="0" aria-label="Specification prompt">Context:
+We are defining a small website for a hands-on workshop. Phase 1 established the audience, primary job, visitor journey, and scope boundaries. We are now specifying behavior, not building the application.
+
+Task:
+Help me turn the reviewed idea brief into a checkable specification. First identify unresolved product decisions. Ask one focused question at a time, starting with any ambiguity that changes the scope. Offer options where useful, but do not decide for me.
+
+References:
+Use the idea brief below as the source of truth. If it is missing or contains placeholder instructions rather than a brief, ask me to provide it before proceeding. Use my subsequent answers as a decision log; flag any answer that changes the Phase 1 scope and ask me to approve that change.
+
+Reviewed Phase 1 brief:
+[Paste your reviewed idea brief here, including its unresolved decisions.]
+
+Constraints:
+Keep the same audience, primary job, and exclusions. Do not add features, choose a framework, prescribe visual styles, create application code, or modify files. Do not invent real event facts, endpoints, or test commands. Ask before using fictional sample content. If a behavior is simulated, explicitly label it as a demo and specify what is not sent or stored.
+
+Verification:
+For each feature, connect it to the brief or a decision I have confirmed. Define observable acceptance criteria covering the normal path and relevant empty, validation, error, and success states. Mark non-applicable states with a reason rather than adding unnecessary functionality. Review routes, content, interactions, and exclusions for contradictions. Do not claim the app has passed tests; it has not been built yet.
+
+Deliverable:
+Once blocking decisions are resolved, present a Markdown draft suitable for SPEC.md with:
+1. Purpose and scope
+2. Confirmed decisions and their source
+3. Routes and content
+4. Required information and approved sample content
+5. Interactions and relevant states
+6. Acceptance criteria with requirement IDs
+7. Exclusions
+8. Remaining questions and approval status
+
+If I cannot resolve a blocker, label the draft blocked and explain what is needed. Stop after presenting the draft for my review. Do not treat silence as approval, save files, or proceed to design or implementation.</pre></div>
+            <div class="prompt-bar"><a class="source-link" href="PROMPT.md">View prompt source and follow-ups</a><button class="btn btn--small" type="button" data-copy="spec-prompt" aria-describedby="prompt-copy-status" hidden>Copy prompt</button></div>
+            <p class="copy-status" id="prompt-copy-status" role="status"></p>
+          </div>
+          <aside class="anatomy-right" aria-label="Six-part prompt explanation">
+            <details open><summary>Context / Name the phase</summary><div class="detail-body">We are specifying behavior, not building the application. This prevents a product conversation from becoming a coding session.</div></details>
+            <details><summary>Task / Resolve ambiguity first</summary><div class="detail-body">Ask about decisions that change the scope before drafting. “RSVP” cannot be specified safely until demo versus real submission is clear.</div></details>
+            <details><summary>References / Bring the brief</summary><div class="detail-body">The reviewed idea brief and confirmed answers are the source of truth. Copying context across sessions avoids reliance on memory.</div></details>
+            <details><summary>Constraints / Preserve boundaries</summary><div class="detail-body">No invented facts, features, code, or visual design. Sample content requires permission and must be labeled fictional.</div></details>
+            <details><summary>Verification / Make it observable</summary><div class="detail-body">A criterion describes what a reviewer can check. “The form works” is too vague; an action, expected state, and failure behavior are checkable.</div></details>
+            <details><summary>Deliverable / Stop for approval</summary><div class="detail-body">A Markdown draft is the output. It is not permission to write files, choose a design, or implement. An unresolved blocker remains visible.</div></details>
+            <div class="pad"><div class="eyebrow">Expected first response</div><p>“Should RSVP collect real registrations, or be an explicitly labeled demo that sends and stores nothing?”</p></div>
+          </aside>
+        </div>
+      </section>
+      <section class="section" id="output" aria-labelledby="output-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">04 · The expected output</div><h2 id="output-title">This is the artifact.</h2></div>
+          <p>An illustrative SPEC.md after a fictional participant has answered the questions. It is not a specification you have approved. Different answers should produce different requirements.</p>
+        </div>
+        <div class="flow-detail">
+          <div class="flow-detail-left notes">
+            <div><div class="eyebrow">Example decisions</div><h3>Explicit, not silently assumed.</h3><ul><li>Demo RSVP; name and email only</li><li>No sending, persistence, or ticket issuance</li><li>Fictional event details and speaker initials</li><li>Four routes, eight talks, six speakers</li><li>Product and Engineering track filters</li></ul></div>
+            <div><div class="eyebrow">Traceable requirements</div><h3>Brief → decision → check.</h3><p>D2 establishes demo-only behavior. I6 defines the privacy boundary. AC7 asks the reviewer to inspect network, console, and storage after submission.</p></div>
+            <div><div class="eyebrow">Your review</div><h3>Approve the meaning, not the length.</h3><p>Check the scope and acceptance criteria before saving a project copy. The complete example remains available below for reading, copying, or download.</p></div>
+          </div>
+          <div class="flow-detail-right notes">
+            <div><div class="eyebrow">Expected document structure</div><h3>Eight sections. One agreement.</h3><ol><li>Purpose and scope</li><li>Confirmed decisions and source</li><li>Routes and content</li><li>Information and sample content</li><li>Interactions and states</li><li>Acceptance criteria</li><li>Exclusions</li><li>Remaining questions and approval</li></ol></div>
+            <div><div class="eyebrow">Not an implementation result</div><p>No site has been built by this exercise. The acceptance criteria are future checks. Checking off the lesson does not make those tests pass.</p></div>
+          </div>
+        </div>
+        <details class="spec-output" id="full-spec"><summary>Read the complete expected output · SPEC.md</summary><div class="detail-body"><pre id="expected-spec" tabindex="0" aria-label="Complete example specification"># DesignCraft 2026 — Example Specification
+
+Status: illustrative expected output, not an approved project specification.
+All event details, speakers, and talks below are fictional workshop fixtures.
+
+## 1. Purpose and scope
+
+Audience: product designers, design engineers, and design leaders.
+Primary job: help visitors understand the event and decide whether to RSVP.
+Journey: event information → schedule → speakers → demo RSVP.
+Deliver a responsive conference-site prototype, not a registration service.
+
+## 2. Example decision log
+
+These decisions represent fictional participant answers, not actual user approval.
+
+- D1 — Phase 1 reference: event information, schedule, speakers, and RSVP; no payments, accounts, CMS, admin dashboard, personalized schedules, live updates, or native app.
+- D2 — Example scope clarification: RSVP is a labeled demo with name and email only. Send and persist nothing. No ticket tiers or confirmation emails.
+- D3 — Example content approval: fictional DesignCraft 2026, Vancouver, 14 November 2026; exact venue not announced. Use speaker initials, not photos.
+- D4 — Example structure approval: four routes, eight talks, six speakers, Product and Engineering tracks, fixed sample content with no remote content service.
+- D5 — Example interaction approval: a single track filter defaults to All and resets on reload; keep talks ordered by start time.
+
+## 3. Routes and content
+
+- R1 / — Event name, date, city, visible fictional-event notice, short purpose statement, and “Try the demo RSVP” linking to /rsvp. Include links to schedule and speakers.
+- R2 /schedule — Show time, title, speaker name, track, and room for each talk. Group by start time. Include All, Product, and Engineering filters.
+- R3 /speakers — Show all six speakers with name, role, initials, and a short bio. No separate speaker-detail route.
+- R4 /rsvp — Name and email fields, demo disclosure, submit control labeled “Try demo RSVP”, and inline validation/success feedback.
+- R5 Shared navigation — Links to the four routes on every page. Direct navigation and reload must work on each route. Unknown paths show “Page not found” with a link home.
+
+## 4. Required information and sample content
+
+Event: name, display date, city, description, fictional-event notice.
+Description: “A one-day gathering for people who design and build digital products.”
+Notice: “Fictional workshop event. No real registrations.”
+All talk times are local Vancouver time on the event date.
+
+Speaker fields: unique id, name, role, initials, bio. Fixtures:
+
+- S1: Alex Chen | Product designer | AC | Designs collaborative product experiences.
+- S2: Morgan Lee | Design engineer | ML | Builds accessible interface prototypes.
+- S3: Sam Rivera | Design leader | SR | Helps teams connect design and delivery.
+- S4: Priya Shah | UX researcher | PS | Studies how people make product decisions.
+- S5: Jordan Park | Frontend engineer | JP | Turns interface patterns into reusable systems.
+- S6: Taylor Brooks | Content designer | TB | Makes complex product journeys understandable.
+
+Talk fields: unique id, 24-hour start time, title, speaker id, track, room. Fixtures:
+
+- T1 | 09:00 | Designing together | S1 | Product | A
+- T2 | 09:00 | From frame to interface | S2 | Engineering | B
+- T3 | 10:00 | Better product decisions | S3 | Product | A
+- T4 | 10:00 | Accessible by default | S5 | Engineering | B
+- T5 | 11:00 | Research that changes direction | S4 | Product | A
+- T6 | 11:00 | Prototypes with purpose | S2 | Engineering | B
+- T7 | 13:00 | Words that guide | S6 | Product | A
+- T8 | 13:00 | Shared interface patterns | S5 | Engineering | B
+
+Every talk's speaker id must resolve to a listed speaker. Within a time group, sort by room. Sample content is fixed; no editing interface or live data feed.
+
+## 5. Interactions and relevant states
+
+- I1 Schedule (D5): All shows eight talks in four time groups. Selecting Product or Engineering shows that track only. Hide empty time groups; mark the active filter programmatically. Changing filters requires no reload; reloading resets to All.
+- I2 Empty content (D4): a track with no matches shows “No talks in this track yet.” An empty schedule shows “Schedule coming soon.” Empty speaker data shows “Speakers coming soon.” Use temporary empty fixtures to verify these cases, not a new production filter option.
+- I3 RSVP input (D2): initial fields are empty. Trim outer whitespace before validating. Name must not be empty; email must not be empty and must pass the browser's email-format validity rules. No network-based address verification.
+- I4 Invalid RSVP (D2): on submit, show “Enter your name.” and/or “Enter a valid email address.” beside the corresponding field, associate errors with inputs, retain entries, focus the first invalid field, and do not show success. Revalidate on the next submit.
+- I5 Valid demo (D2): display “Demo complete. No registration was sent or saved.” as an accessible status and clear the fields and errors. Keep the form available for another demonstration. Remove stale success feedback when the visitor starts typing again.
+- I6 Privacy boundary (D2): show “Demo only. Use fictional details. Nothing is sent or saved.” above the form. No form requests, browser persistence, analytics events containing entries, or console logging of entries. Input exists only in page memory until cleared or the page reloads.
+- I7 Non-applicable states (D2, D4): content and validation are local and synchronous. No network loading, submission retry, or service-error simulation. Real submission would require a newly approved destination and pending/error/retry requirements.
+
+## 6. Acceptance criteria
+
+These are checks to run after implementation, not evidence of completed testing.
+
+- AC1 (R1, R5): open each route directly and reload it; the intended content remains available. Navigation reaches all four routes. An unknown path shows the stated fallback and working home link.
+- AC2 (R1, D3): landing content matches the fictional event details and notice; its main CTA opens /rsvp.
+- AC3 (R2, I1): All shows eight talks; Product and Engineering each show four. Groups are ordered 09:00, 10:00, 11:00, 13:00, and talks within groups are ordered by room. Switching filters updates the visible and accessible selected state; reload restores All.
+- AC4 (I2): with temporary no-match and empty-data fixtures, the stated messages appear without empty time-group headings. Restore the normal fixtures afterward.
+- AC5 (R3, D4): six speaker entries show matching names, roles, initials, and bios. Every schedule speaker reference resolves.
+- AC6 (I3, I4): blank or whitespace-only name and blank or malformed email block success. Inline errors identify the fields, entries remain, and focus moves to the first invalid field. Valid fictional entries succeed on resubmission.
+- AC7 (I5, I6): valid demo submission shows the exact demo message and clears inputs/errors. Typing again clears the stale message. Inspect network, console, and browser storage to confirm the form sends and persists no entries.
+- AC8 (all routes): at 1440px and 375px widths, no horizontal page overflow occurs; content and controls remain usable. Capture both widths, plus relevant filter and form states.
+- AC9 (R5, I1, I4, I5): navigation, filters, and form controls work by keyboard with visible focus. Fields have labels; errors and success are programmatically associated or announced. No new browser console errors occur during these flows.
+- AC10 (verification handoff): once implementation tooling exists, identify its actual build, lint, and test commands. Verify the relevant checks and report results; do not invent commands or mark them passed in this specification.
+
+## 7. Exclusions
+
+No payments, accounts, ticket types, confirmation emails, real registration, CMS, admin dashboard, personalized schedules, live updates, native app, sponsor management, search, or speaker-detail pages. No technology or visual-design decisions are made by this document. The /styleguide is a later design exercise, not an extra attendee feature required here.
+
+## 8. Remaining questions and approval
+
+Within this fictional demo, no product-behavior blockers remain after D1–D5.
+Visual direction belongs to Phase 3; implementation tooling and hosting are decided before building and deploying.
+For an actual project, confirm or replace D2–D5 with the participant's answers. Do not use demo-only criteria for a real registration service.
+Approval: awaiting explicit human review. Save an approved project copy separately; preserve this file as the workshop example.</pre></div></details>
+        <div class="prompt-bar"><a class="source-link" href="SPEC.md" download>Download example SPEC.md</a><button class="btn btn--small" type="button" data-copy="expected-spec" aria-describedby="spec-copy-status" hidden>Copy expected output</button></div>
+        <p class="copy-status" id="spec-copy-status" role="status"></p>
+      </section>
+      <section class="section" id="checklist" aria-labelledby="checklist-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">05 · The review gate</div><h2 id="checklist-title">Approve the agreement.</h2></div>
+          <p>Review your specification against your brief and decisions. These checks record your judgment; they do not analyze the document or approve it on your behalf.</p>
+        </div>
+        <div class="flow-detail">
+          <fieldset class="checklist"><legend>Confirm your specification is ready</legend>
+            <label><input type="checkbox">The specification uses the reviewed Phase 1 brief.</label>
+            <label><input type="checkbox">Scope changes and sample-content choices are explicitly confirmed.</label>
+            <label><input type="checkbox">Every route has a purpose and required content.</label>
+            <label><input type="checkbox">Information fields and cross-references are clear.</label>
+            <label><input type="checkbox">Interactions and relevant states are specified.</label>
+            <label><input type="checkbox">Each feature has observable acceptance criteria.</label>
+            <label><input type="checkbox">Exclusions remain intact and no blocking questions are hidden.</label>
+            <label><input type="checkbox">The human has explicitly approved the final draft.</label>
+          </fieldset>
+          <div class="flow-detail-right completion">
+            <div class="eyebrow">Your review</div>
+            <progress id="review-progress" max="8" value="0" aria-label="Checklist completion" hidden></progress>
+            <p id="review-status" role="status">Check each item against your specification.</p>
+            <h3 id="next-title">First, review the specification.</h3>
+            <p>After explicit approval, save a project copy of SPEC.md. Carry it into Phase 3 to choose visual references, tokens, and component patterns, then create a small prototype—not the full application.</p>
+            <p class="muted">Selections last until you reload this page. Bring your approved specification into the next lesson.</p>
+            <a class="btn" href="../phase-3-prototype/index.html">Continue to Phase 3: Prototype <span aria-hidden="true">→</span></a>
+            <a class="source-link" href="PROMPT.md">Get the review and save follow-up prompts →</a>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <div class="footer">
+          <div><h4>Design to Ship</h4><p>Phase 2 · Define the behavior.<br>Make the result checkable.</p></div>
+          <div><h4>Lesson materials</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="LESSON.md">Facilitator lesson</a></li><li><a href="PROMPT.md">Prompt and follow-ups</a></li><li><a href="SPEC.md">Expected specification</a></li></ul></div>
+          <div><h4>Continue the workshop</h4><ul><li><a href="../skills/index.html">Skills · Matt Pocock’s examples</a></li><li><a href="../phase-1-idea/index.html">Phase 1 · Idea</a></li><li><a href="../WORKSHOP.md">Workshop guide</a></li><li><a href="../agent-prompting-foundations.md">Prompting foundations</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><span>Idea → Spec → Design → Plan → Build</span><span>Plain HTML · Shared website styles · No React</span></div>
+      </footer>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const source = document.getElementById(button.dataset.copy);
+        const status = document.getElementById(button.getAttribute('aria-describedby'));
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          status.textContent = 'Copied. Review and replace example details before using.';
+        } catch {
+          const disclosure = source.closest('details');
+          if (disclosure) disclosure.open = true;
+          source.focus();
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C to copy.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    const checks = [...document.querySelectorAll('.checklist input')];
+    const progress = document.getElementById('review-progress');
+    progress.hidden = false;
+    const updateReview = () => {
+      const completed = checks.filter(check => check.checked).length;
+      progress.value = completed;
+      document.getElementById('review-status').textContent = `${completed} of ${checks.length} checks confirmed`;
+      document.getElementById('next-title').textContent = completed === checks.length
+        ? 'Ready for Phase 3: Design.'
+        : 'First, review the specification.';
+    };
+    checks.forEach(check => check.addEventListener('change', updateReview));
+    updateReview();
+  </script>
+</body>
+</html>

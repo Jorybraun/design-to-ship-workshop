@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Phase 1 of Design to Ship: turn a website idea into a clear project brief with a guided prompt, walkthrough, and completion checklist.">
+  <title>Phase 1 · Idea — Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, 0.72); --ink-faint: rgba(26, 26, 26, 0.66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .anatomy > *, .compare > * { min-width: 0; }
+    .hero-left h1 { max-width: 11ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    .section-intro h2 { max-width: 18ch; }
+    .compare-cell h3 { margin-top: 12px; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.86rem; line-height: 1.65; margin: 0; }
+    .walkthrough { padding: 0; }
+    .walkthrough details { border-bottom: 1px solid var(--hairline); }
+    .walkthrough details:last-child { border-bottom: 0; }
+    summary { cursor: pointer; padding: var(--rhythm); font-weight: 500; }
+    summary::marker { color: var(--accent); }
+    details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p { margin-top: 12px; }
+    .detail-body pre { margin-top: 16px; padding: 16px; background: var(--ground); border: 1px solid var(--hairline); }
+    .detail-body ul { padding-left: 20px; }
+    .facilitator { margin: 0; border-top: 1px solid var(--hairline); }
+    .facilitator blockquote { margin: 0; max-width: 72ch; font-size: 1.1rem; }
+    .prompt-block { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .anatomy-right details { border-bottom: 1px solid var(--hairline); }
+    .anatomy-right .detail-body { color: var(--ink-soft); }
+    .eyebrow + pre, .eyebrow + h3 { margin-top: 16px; }
+    .source-link { font-size: 0.85rem; text-underline-offset: 4px; }
+    .brief-notes { display: flex; flex-direction: column; gap: 24px; }
+    .checklist { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checklist legend { padding: var(--rhythm); font-weight: 500; }
+    .checklist label { display: flex; gap: 14px; padding: 16px var(--rhythm); border-top: 1px solid var(--hairline); cursor: pointer; align-items: start; }
+    .checklist input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { background: var(--ground); }
+    .completion { display: flex; flex-direction: column; gap: 18px; }
+    .completion h3 { font-size: 1.8rem; line-height: 1.2; }
+    progress { width: 100%; height: 8px; accent-color: var(--accent); }
+    .copy-status { font-size: 0.85rem; min-height: 1.6em; color: var(--ink-soft); padding: 0 var(--rhythm) 12px; }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: 0.85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
+      .phase-path li { min-width: 33%; font-size: 0.7rem; padding: 12px; }
+      .hero-left h1 { padding-top: 2.5rem; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson</a>
+  <header class="outer">
+    <nav class="nav container" aria-label="Lesson navigation">
+      <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a>
+      <span class="nav-spacer"></span>
+      <ul class="nav-links">
+        <li><a href="#walkthrough">Walkthrough</a></li>
+        <li><a href="#prompt">Prompt</a></li>
+        <li><a href="#example">Example</a></li>
+        <li><a href="#checklist">Checklist</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="outer" id="main">
+    <div class="container">
+      <ol class="phase-path" aria-label="Workshop phases">
+        <li aria-current="step">01 / Idea</li>
+        <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+        <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+        <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+        <li><a href="../phase-5-build/index.html">05 / Build</a></li>
+        <li><a href="../phase-6-ship/index.html">06 / Ship</a></li>
+      </ol>
+      <section class="hero" aria-labelledby="lesson-title">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <div class="eyebrow">Phase 01 · Product discovery</div>
+            <h1 id="lesson-title">Decide what.<br>Then build.</h1>
+            <p class="lead">Turn a vague website idea into a clear brief. You make the product decisions. The agent helps you ask the right questions.</p>
+          </div>
+          <div class="hero-right">
+            <div class="pad">
+              <ul class="hero-list">
+                <li><span>Starting point</span><span>“A design conference website”</span></li>
+                <li><span>Your role</span><span>Decide audience, purpose, scope</span></li>
+                <li><span>Agent’s role</span><span>Interview, clarify, summarize</span></li>
+                <li><span>Outcome</span><span>One agreed idea brief</span></li>
+              </ul>
+            </div>
+            <p class="hero-statement">Don’t delegate your <em>product decisions</em> by accident.</p>
+            <div class="hero-links">
+              <a class="hero-link hero-link--primary" href="#walkthrough">Start the walkthrough <span aria-hidden="true">→</span></a>
+              <a class="hero-link" href="#prompt">Get the prompt <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="starting-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">01 · The starting point</div><h2 id="starting-title">A request is not yet a brief.</h2></div>
+          <p>Before choosing technology or designing pages, decide who this is for and what they need to accomplish. A vague instruction leaves those decisions open.</p>
+        </div>
+        <div class="compare">
+          <div class="compare-cell">
+            <div class="eyebrow">Too much left to guess</div>
+            <pre>Build me a website for a design conference.</pre>
+            <ul><li>Who is the conference for?</li><li>What should visitors do?</li><li>Does registration involve payments or accounts?</li><li>What are we explicitly not building?</li></ul>
+          </div>
+          <div class="compare-cell">
+            <div class="eyebrow">A better first move</div>
+            <pre>Help me clarify the idea before we build anything. Ask one product question at a time. I’ll make the decisions; you organize them into a brief.</pre>
+            <ul><li>Discovery, not implementation</li><li>Human decisions, agent-assisted questions</li><li>One concrete artifact at the end</li><li>A clear stopping point before specification</li></ul>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="walkthrough" aria-labelledby="walkthrough-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">02 · Guided walkthrough</div><h2 id="walkthrough-title">One decision at a time.</h2></div>
+          <p>Use a fresh agent conversation for this exercise. Read each step, then try it yourself. The example answers are suggestions—not decisions the agent should make for you.</p>
+        </div>
+        <div class="flow-detail">
+          <div class="flow-detail-left walkthrough">
+            <details open><summary>01 / Start with your rough idea</summary><div class="detail-body"><p>You don’t need a polished brief yet. One sentence gives the conversation a starting point.</p><pre>A website for a one-day product design conference.</pre></div></details>
+            <details><summary>02 / Give the agent the discovery prompt</summary><div class="detail-body"><p>Copy the prompt below into your agent. Change the initial idea if you want a different project. Do not ask it to build yet.</p><p><a href="#prompt">Go to the copyable prompt →</a></p></div></details>
+            <details><summary>03 / Answer one focused question</summary><div class="detail-body"><p>The agent might ask: “Who is the primary attendee?”</p><pre>Product designers, design engineers, and design leaders working in technology.</pre><p>Continue with purpose, journey, and scope. If an answer is unclear, ask the agent to offer a few options and explain the trade-offs.</p></div></details>
+            <details><summary>04 / Redirect premature implementation</summary><div class="detail-body"><p>If the agent starts choosing frameworks, inventing event details, designing pages, or writing code, bring it back to discovery.</p><pre>Stay in discovery. Ask one product question at a time and do not make the decision for me.</pre></div></details>
+            <details><summary>05 / Review the resulting brief</summary><div class="detail-body"><p>Read the summary. Correct assumptions, confirm the scope, and keep unresolved questions visible. Use the completion checklist before moving on.</p><p><a href="#checklist">Review the completion gate →</a></p></div></details>
+          </div>
+          <div class="flow-detail-right brief-notes">
+            <div><div class="eyebrow">You decide</div><h3>Audience. Purpose. Boundaries.</h3><p>Who is this for? What is the one job the site must do? What are we deliberately leaving out?</p></div>
+            <div><div class="eyebrow">The agent helps</div><h3>Questions, not assumptions.</h3><p>It interviews you, organizes your answers, and identifies what is still undecided. It does not silently fill in missing product decisions.</p></div>
+            <div><div class="eyebrow">Not yet</div><h3>No code. No design. No stack.</h3><p>Exact routes, data models, visual references, and implementation plans belong in later phases.</p></div>
+          </div>
+        </div>
+        <details class="facilitator"><summary>Facilitator notes · How to explain this to the room</summary><div class="detail-body"><blockquote>“Our first instinct may be to ask the agent to build a conference website. That delegates product decisions, not just implementation. Before opening the coding loop, we decide who the site serves, the one job it performs, and what we are not building. We can use the agent as an interviewer, but it should expose decisions rather than silently make them.”</blockquote></div></details>
+      </section>
+      <section class="section" id="prompt" aria-labelledby="prompt-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">03 · The discovery prompt</div><h2 id="prompt-title">Brief the interviewer.</h2></div>
+          <p>Copy this into your agent, then answer its questions. The output is a brief in the conversation—not a built website. Expand the notes to understand why each instruction is there.</p>
+        </div>
+        <div class="anatomy">
+          <div class="anatomy-left">
+            <div class="prompt-block"><pre id="discovery-prompt" tabindex="0" aria-label="Guided discovery prompt">Context:
+I am defining a small website project for a hands-on workshop. The project must be focused enough to design, build, verify, and review during the workshop.
+
+Initial idea:
+A website for a one-day product design conference.
+
+Task:
+Help me clarify this idea before we write a specification, choose technology, design the interface, or build anything.
+
+Method:
+Ask me one focused question at a time. Help me decide:
+- who the primary audience is,
+- what single job the website should perform,
+- what the visitor's main journey is,
+- which capabilities are essential,
+- what should be explicitly out of scope,
+- and which product decisions remain unresolved.
+
+When an answer is vague, ask a concrete follow-up question. Present a small set of meaningful options when that would make the decision easier. Do not answer product questions on my behalf.
+
+Constraints:
+Do not propose a technology stack, visual style, page structure, data model, or implementation plan yet. Do not create or modify files. Keep the project small enough for a workshop exercise.
+
+Verification:
+Before finishing, check that the result names a specific audience, one primary job, a coherent visitor journey, clear scope boundaries, and all unresolved decisions. If any item is missing, ask another question.
+
+Deliverable:
+After I answer the questions, produce a concise idea brief with these headings:
+- Description
+- Audience
+- Primary job
+- Main user journey
+- In scope
+- Out of scope
+- Unresolved decisions
+
+Stop after presenting the brief. Do not proceed to specification or implementation.</pre></div>
+            <div class="prompt-bar"><a class="source-link" href="PROMPT.md">View prompt source</a><button type="button" class="btn btn--small" data-copy="discovery-prompt" aria-describedby="prompt-copy-status" hidden>Copy prompt</button></div>
+            <p class="copy-status" id="prompt-copy-status" role="status"></p>
+          </div>
+          <aside class="anatomy-right" aria-label="Why the prompt works">
+            <details open><summary>Context / Give the work a purpose</summary><div class="detail-body">A small workshop project sets an appropriate scale. The initial idea gives the interview a starting point without pretending the decisions are already made.</div></details>
+            <details><summary>Task / Ask for discovery</summary><div class="detail-body">“Clarify this idea” is a different task from “build this website.” Say which mode of work you want before the agent takes action.</div></details>
+            <details><summary>Method / Make room for decisions</summary><div class="detail-body">One question at a time keeps the conversation manageable. Options help you decide, but the agent must not answer for you.</div></details>
+            <details><summary>Constraints / Stop the wrong work</summary><div class="detail-body">No technology choices, page structures, design, or file changes. These boundaries prevent the conversation from becoming an implementation session.</div></details>
+            <details><summary>Verification / Check the brief</summary><div class="detail-body">At this stage, verification is a content check—not a test command. Confirm a specific audience, primary job, coherent journey, and visible scope boundaries.</div></details>
+            <details><summary>Deliverable / Define the stopping point</summary><div class="detail-body">Seven headings give the output a predictable shape. “Stop after presenting the brief” prevents the agent from continuing into specification without approval.</div></details>
+            <div class="pad"><div class="eyebrow">Where are the references?</div><p>This is discovery from an initial idea, not implementation against an existing design. Add genuine event information if you have it; don’t invent references just to fill a template.</p></div>
+          </aside>
+        </div>
+      </section>
+      <section class="section" id="example" aria-labelledby="example-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">04 · The example artifact</div><h2 id="example-title">What good looks like.</h2></div>
+          <p>A fictional DesignCraft example, not a set of decisions you have already approved. Your own brief should reflect your answers and retain the questions you have not resolved.</p>
+        </div>
+        <div class="flow-detail">
+          <div class="flow-detail-left brief-notes">
+            <div><div class="eyebrow">Specific enough to discuss</div><h3>One audience. One primary job.</h3><p>The visitor journey explains why each capability belongs. The brief does not prescribe frameworks or detailed page layouts.</p></div>
+            <div><div class="eyebrow">Bounded enough to build</div><h3>“Not building” is part of the brief.</h3><p>No payments, accounts, CMS, or admin dashboard. These exclusions prevent a small conference site from becoming an event-management platform.</p></div>
+            <div><div class="eyebrow">Honest about uncertainty</div><h3>Unresolved does not mean forgotten.</h3><p>The RSVP service and photography still need decisions. Carry those questions into specification rather than letting the agent guess.</p></div>
+          </div>
+          <div class="flow-detail-right">
+            <pre id="example-brief" tabindex="0" aria-label="Example DesignCraft idea brief"># DesignCraft 2026 — Idea Brief
+
+## Description
+
+DesignCraft 2026 is a one-day conference in Vancouver for people who design and build digital products.
+
+## Audience
+
+Product designers, design engineers, and design leaders working in technology.
+
+## Primary job
+
+Help prospective attendees understand the event and decide whether to RSVP.
+
+## Main user journey
+
+1. Learn what the conference is about.
+2. Review the schedule.
+3. Explore the speakers.
+4. Submit an RSVP.
+
+## In scope
+
+- Event information
+- Conference schedule
+- Speaker information
+- RSVP submission
+- Responsive desktop and mobile experience
+
+## Out of scope
+
+- Payments
+- User accounts
+- A content management system
+- An administrative dashboard
+- Personalized schedules
+- Real-time event updates
+- A native mobile application
+
+## Unresolved decisions
+
+- Whether RSVP submissions require a real external form service
+- Whether speaker photography will be provided or represented by placeholders</pre>
+            <div class="prompt-bar"><span>Example only · replace with your decisions</span><button type="button" class="btn btn--small" data-copy="example-brief" aria-describedby="brief-copy-status" hidden>Copy example</button></div>
+            <p class="copy-status" id="brief-copy-status" role="status"></p>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="checklist" aria-labelledby="checklist-title">
+        <div class="section-intro">
+          <div><div class="eyebrow">05 · The completion gate</div><h2 id="checklist-title">Ready is checkable.</h2></div>
+          <p>Review your own brief, not just the example. Confirm every item before moving to specification. This is your review—not an automated assessment of the brief.</p>
+        </div>
+        <div class="flow-detail">
+          <fieldset class="checklist">
+            <legend>Confirm your brief is ready</legend>
+            <label><input type="checkbox">The audience is specific.</label>
+            <label><input type="checkbox">The website has one clear primary job.</label>
+            <label><input type="checkbox">The main visitor journey is understandable.</label>
+            <label><input type="checkbox">The in-scope capabilities support that journey.</label>
+            <label><input type="checkbox">The out-of-scope list prevents obvious expansion.</label>
+            <label><input type="checkbox">Unresolved decisions are visible rather than silently guessed.</label>
+            <label><input type="checkbox">The project is small enough to complete during the workshop.</label>
+          </fieldset>
+          <div class="flow-detail-right completion">
+            <div class="eyebrow">Your review</div>
+            <progress id="review-progress" max="7" value="0" aria-label="Checklist completion" hidden></progress>
+            <p id="review-status" role="status">Check each item against your brief.</p>
+            <h3 id="next-title">First, agree on the idea.</h3>
+            <p id="next-description">Resolve missing answers or record open questions. Then carry the agreed brief into Phase 2: routes, content, data, states, interactions, and acceptance criteria.</p>
+            <p class="muted">Checklist selections last until you reload this page. Bring your reviewed brief into the next lesson.</p>
+            <a class="btn" href="../phase-2-spec/index.html">Continue to Phase 2: Spec <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <div class="footer">
+          <div><h4>Design to Ship</h4><p>Phase 1 · You decide what.<br>The agent helps make it explicit.</p></div>
+          <div><h4>Lesson materials</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="LESSON.md">Facilitator lesson</a></li><li><a href="PROMPT.md">Discovery prompt</a></li></ul></div>
+          <div><h4>Workshop references</h4><ul><li><a href="../skills/index.html">Skills · Matt Pocock’s examples</a></li><li><a href="../WORKSHOP.md">Workshop guide</a></li><li><a href="../agent-prompting-foundations.md">Agent prompting foundations</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><span>Idea → Spec → Design → Plan → Build</span><span>Plain HTML · Shared website styles · No React</span></div>
+      </footer>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const source = document.getElementById(button.dataset.copy);
+        const status = document.getElementById(button.getAttribute('aria-describedby'));
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          status.textContent = 'Copied. Paste into your agent when you are ready.';
+        } catch {
+          source.focus();
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C to copy.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    const checks = [...document.querySelectorAll('.checklist input')];
+    const progress = document.getElementById('review-progress');
+    progress.hidden = false;
+    const updateReview = () => {
+      const completed = checks.filter(check => check.checked).length;
+      progress.value = completed;
+      document.getElementById('review-status').textContent = `${completed} of ${checks.length} checks confirmed`;
+      document.getElementById('next-title').textContent = completed === checks.length
+        ? 'Ready for Phase 2: Spec.'
+        : 'First, agree on the idea.';
+    };
+    checks.forEach(check => check.addEventListener('change', updateReview));
+    updateReview();
+  </script>
+</body>
+</html>
