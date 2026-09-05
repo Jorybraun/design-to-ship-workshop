@@ -4,7 +4,8 @@ A beginner-friendly workshop about building with an AI coding agent: define the 
 
 The human decides what to build; the agent executes within scope, verifies, and reports.
 
-Source repository: [Jorybraun/design-to-ship-workshop](https://github.com/Jorybraun/design-to-ship-workshop). A public workshop deployment has not been created.
+Source repository: [Jorybraun/design-to-ship-workshop](https://github.com/Jorybraun/design-to-ship-workshop).  
+Hosted workshop: [https://jorybraun.github.io/design-to-ship-workshop/](https://jorybraun.github.io/design-to-ship-workshop/)
 
 ## Start here
 
