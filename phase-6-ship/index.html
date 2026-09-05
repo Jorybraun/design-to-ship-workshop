@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Phase 6 of Design to Ship: review public source scope, inspect the exact artifact, approve deployment, smoke test and leave a reliable maintenance handoff.">
+  <title>Phase 6 · Ship + handoff — Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, .72); --ink-faint: rgba(26, 26, 26, .66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .section-intro > * { min-width: 0; }
+    .hero-left h1 { max-width: 13ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: .78rem; }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    a { text-underline-offset: 4px; }
+    .notice { padding: var(--rhythm); border-top: 1px solid var(--hairline); background: var(--ground-2); }
+    .section-intro h2 { max-width: 19ch; }
+    .walkthrough { padding: 0; }
+    details { border-bottom: 1px solid var(--hairline); min-width: 0; }
+    summary { cursor: pointer; padding: var(--rhythm); font-weight: 500; }
+    summary::marker, details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p, .notes p + p { margin-top: 14px; }
+    .notes { display: flex; flex-direction: column; gap: 18px; }
+    .notes h3 { margin: 12px 0; }
+    pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .86rem; line-height: 1.65; }
+    code, .sources a, .prompt-block { overflow-wrap: anywhere; }
+    .prompt-block { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .copy-status { min-height: 1.6em; padding: 0 var(--rhythm) 12px; font-size: .85rem; color: var(--ink-soft); }
+    .checklist { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checklist legend { padding: var(--rhythm); font-weight: 500; }
+    .checklist label { display: flex; gap: 14px; padding: 16px var(--rhythm); border-top: 1px solid var(--hairline); cursor: pointer; align-items: start; }
+    .checklist input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { background: var(--ground); }
+    .completion { display: flex; flex-direction: column; gap: 18px; }
+    .completion h3 { font-size: 1.8rem; line-height: 1.2; }
+    progress { width: 100%; height: 8px; accent-color: var(--accent); }
+    .sources { padding: var(--rhythm) var(--rhythm) var(--rhythm) 42px; }
+    .sources li { padding: 8px 0; }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
+      .nav-links a { padding: 0 8px; font-size: .85rem; }
+      .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson</a>
+  <header class="outer"><nav class="nav container" aria-label="Lesson navigation">
+    <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
+    <ul class="nav-links"><li><a href="#walkthrough">Practice</a></li><li><a href="#deployment">Deploy</a></li><li><a href="#handoff">Handoff</a></li><li><a href="#prompts">Prompts</a></li></ul>
+  </nav></header>
+  <main class="outer" id="main"><div class="container">
+    <ol class="phase-path" aria-label="Workshop phases"><li><a href="../phase-1-idea/index.html">01 / Idea</a></li><li><a href="../phase-2-spec/index.html">02 / Spec</a></li><li><a href="../phase-3-prototype/index.html">03 / Design system</a></li><li><a href="../phase-4-plan/index.html">04 / Plan</a></li><li><a href="../phase-5-build/index.html">05 / Build + review</a></li><li aria-current="step">06 / Ship + handoff</li></ol>
+    <section class="hero" aria-labelledby="lesson-title"><div class="hero-grid">
+      <div class="hero-left"><div class="eyebrow">Phase 06 · Ship + handoff</div><h1 id="lesson-title">Ship the reviewed build.<br>Leave a reliable handoff.</h1><p class="lead">Choose the exact source and artifact. Approve one public target. Verify what visitors receive and give the next maintainer a usable recovery path.</p></div>
+      <div class="hero-right"><div class="pad"><ul class="hero-list"><li><span>Bring</span><span>Reviewed build + human owner</span></li><li><span>Separate</span><span>Source repo ≠ deployed artifact</span></li><li><span>Prepare</span><span>Public scope + rollback</span></li><li><span>Verify</span><span>Actual hosted URL + evidence</span></li><li><span>Leave with</span><span>Maintainer handoff or blockers</span></li></ul></div><p class="hero-statement">Publication is <em>a decision, not a side effect.</em></p><div class="hero-links"><a class="hero-link hero-link--primary" href="#walkthrough">Start the release review <span aria-hidden="true">→</span></a><a class="hero-link" href="#checklist">Review the gate <span aria-hidden="true">→</span></a></div></div>
+    </div><p class="notice"><strong>Real release or fictional rehearsal?</strong> These teaching files are not release evidence or approval. Lesson authoring, copying prompts and checking boxes authorize no Git, repository, cloud, tracker or deployment actions. Missing actual inputs means stop or rehearse in chat.</p></section>
+    <section class="section" id="walkthrough" aria-labelledby="walkthrough-title">
+      <div class="section-intro"><div><div class="eyebrow">01 · Say / do / decide</div><h2 id="walkthrough-title">Name what is shipping.</h2></div><p>Reviewed scope → source preview → artifact inspection → recovery plan → explicit deployment approval → hosted smoke test → maintenance handoff.</p></div>
+      <div class="flow-detail"><div class="flow-detail-left walkthrough"><details open><summary>Confirm the product and release owner</summary><div class="detail-body"><p><strong>Say:</strong> “Are we shipping this workshop teaching website or the DesignCraft conference app?” They are not the same product. <code>website/</code> is workshop reference material, not a built conference app.</p><p><strong>Do:</strong> identify actual approved scope, human owner, source of truth, current commit/branch and dirty tracked/untracked state. The <a href="../phase-2-spec/SPEC.md">example spec</a> and <a href="../phase-4-plan/PLAN.md">candidate plan</a> are fictional and unapproved. T1 still has destination shells.</p><p><strong>Paste:</strong> <a href="#release-prompt">Prompt 1</a> with exact read scope. <strong>Expect:</strong> a readiness report, revision-bound evidence and blockers, not a build. <strong>Check:</strong> actual evidence, environment and timestamp; missing checks stay NOT RUN.</p><p><strong>Decide:</strong> continue to previews or resolve missing inputs. <strong>Stop:</strong> ambiguous product, unknown owner, unreviewed changes or invented approval.</p></div></details></div><div class="flow-detail-right notes"><div><div class="eyebrow">Two different destinations</div><h3>Source code is not the live site.</h3><p><strong>Workshop source:</strong> <a href="https://github.com/Jorybraun/design-to-ship-workshop">Jorybraun/design-to-ship-workshop</a></p><p><strong>Deployed public URL:</strong> Not published by this lesson</p></div><p>Record each real URL only after its separately approved operation returns it. Public repository visibility is not deployment or an open-source license grant. A localhost or browser preview URL is not public hosting.</p></div></div>
+    </section>
+    <section class="section" id="repository" aria-labelledby="repository-title">
+      <div class="section-intro"><div><div class="eyebrow">02 · Source publication</div><h2 id="repository-title">Publish an intentional source package.</h2></div><p>A human chooses owner, name, visibility and rights. A reviewed allowlist is safer than publishing the workspace or cloning private material wholesale.</p></div>
+      <details><summary>Say / do / paste: preview the repository</summary><div class="detail-body"><p><strong>Say:</strong> “Which exact files may become public, under whose ownership?” <strong>Do:</strong> name owner/account, repository name, visibility and default branch. Review source, history, Markdown, images, logos, fonts, attribution and reusable skills for disclosure and redistribution rights.</p><p><strong>Paste:</strong> <a href="#repository-prompt">Prompt 2</a>. <strong>Expect:</strong> file-by-file allowlist, exclusions, exact operations, README setup/update instructions and maintainer ownership. The human selects a license or resolves publication without an open-source license; never add one automatically.</p><p><strong>Check:</strong> ignore dependencies such as <code>node_modules/</code>, <code>dist/</code>, caches, environment files, secrets, local <code>.devin</code> configuration and <code>outputs/</code>. Ignore rules do not remove tracked files or old secrets. Inspect the actual content and any history to be published.</p><p>Existing lessons link project-local skill source. Individually reviewed reusable skills may belong in the public source allowlist; that is not permission to expose the entire <code>.devin</code> directory. Never use broad <code>git add .</code>.</p></div></details>
+      <details><summary>Decide / check / stop: authorize one exact publication batch</summary><div class="detail-body"><p><strong>Decide:</strong> explicitly approve or deny owner/name/visibility, file manifest and exact stage/commit/create/push operations. A supported repository tool, including GitHub CLI where available, does not confer permission. No staging, commit, repository creation or push before approval.</p><p><strong>Check after approval:</strong> verify actual remote identity, visibility, default branch, commit and returned source URL. Ask the operator about missing access without revealing credentials. <strong>Stop:</strong> rights gaps, ambiguous failures or partial remote operations; reconcile state before retrying. Source publication never automatically deploys.</p></div></details>
+    </section>
+    <section class="section" id="package" aria-labelledby="package-title">
+      <div class="section-intro"><div><div class="eyebrow">03 · Artifact inspection</div><h2 id="package-title">Inspect what the host will receive.</h2></div><p>A deployable artifact has its own identity and manifest. Neither the whole repository nor a directory named dist is automatically the correct release.</p></div>
+      <details><summary>The workshop packaging catch</summary><div class="detail-body"><p><strong>Say:</strong> “This manifest, not the laptop, is the release.” <strong>Do:</strong> inspect the root entry <code>index.html</code>, intended lesson paths, shared CSS/logo and downloadable Markdown or reviewed skill source. Keep internal maintenance tests out of deployment even if they belong in reviewed source.</p><p><strong>Check:</strong> these lessons reference <code>../website/src/index.css</code> and <code>../website/public/cognition-mark.svg</code>. Preserve that approved relative layout or separately authorize and verify a path rewrite. Deploying only <code>website/dist</code> loses the lessons; deploying the entire root can expose private/internal files. Every intended public dependency must be in the artifact allowlist.</p><p><strong>Expect:</strong> an artifact tied to reviewed source, with direct nested entry/reload and downloads accounted for. Exclude secrets, local configuration, dependencies, caches and unrelated outputs. Generated deployment assets need explicit approval; source ignores and deployable files are different lists.</p><p><strong>Decide:</strong> approve any needed build/package command separately with working directory and generated outputs, then inspect the artifact and refresh evidence. Plain static HTML may need no build. <strong>Stop:</strong> missing entry page, unknown generated contents, broken paths or source/artifact mismatch. No packaging code is required to rehearse this lesson.</p></div></details>
+    </section>
+    <section class="section" id="deployment" aria-labelledby="deployment-title">
+      <div class="section-intro"><div><div class="eyebrow">04 · Capability + permission</div><h2 id="deployment-title">Prepare recovery. Approve one target.</h2></div><p>A Devin URL is an option only when the actual session and account support native deployment. This local lesson-authoring CLI has no discovered native deploy tool.</p></div>
+      <details><summary>What native deployment does—and does not promise</summary><div class="detail-body"><p>The <a href="https://docs.devin.ai/product-guides/deployment-capabilities">official deployment capabilities guide</a> describes native deployment for small standalone apps Devin creates. A static directory must contain <code>index.html</code>, whether produced by any framework or written as plain HTML. Success returns a unique public <code>devinapps.com</code> URL that stays available after the session ends; that is not a maintenance or service-level guarantee.</p><p><strong>Do:</strong> have the operator inspect actual session deployment tools and account settings. Native deployment is available to non-enterprise organizations with secure mode OFF. Enterprise deployments are disabled and secure mode blocks deployment. <strong>Never disable security or change organizational policy to proceed.</strong></p><p>Existing applications generally use their own approved CI/CD, credentials and pipeline. An existing static application may work natively, but compatibility is not guaranteed. No supported tool or access? Ask the operator, choose separately approved own hosting, or leave a manual prepared release. Do not invent commands or a hosted URL.</p></div></details>
+      <details><summary>Say / do / paste: prepare rollback before deployment</summary><div class="detail-body"><p><strong>Say:</strong> “Who can recover this target, and from which artifact?” <strong>Do:</strong> retain the reviewed artifact, manifest and evidence; name the recovery operator, trigger and host-supported procedure. Identify the prior known-good version. A first deployment has no previous version: prepare supported unpublish/disable or a reviewed fix-forward strategy instead.</p><p><strong>Paste:</strong> <a href="#deploy-prompt">Prompt 3</a> with exact target/account, artifact, commit/dirty-state evidence and manifest. <strong>Expect:</strong> preview only, supported capability/access findings, verification gaps, recovery strategy and a request for explicit session approve/deny. Rollback execution needs its own approval.</p></div></details>
+      <details><summary>Decide / check / stop: deploy only the approved artifact</summary><div class="detail-body"><p><strong>Decide:</strong> explicitly approve or deny this exact public target, artifact, commit and manifest, plus the relevant native deployment approval. Only after confirmation use available supported tools for that package alone. No automatic install, configuration change, extra service, credential disclosure or cloud launch.</p><p><strong>Check:</strong> actual returned public URL, deployment ID if available, target/artifact evidence and timestamp. Localhost and browser previews are not substitutes. <strong>Stop:</strong> partial errors or unclear remote state; resolve before retrying. Do not change Git or trackers.</p><p>Cloud <code>/handoff</code> is a separate launch, transfer and cost decision, not a deploy command. Review tracked/untracked transfer scope and follow <a href="../phase-5-build/index.html#cloud">Phase 5 cloud handoff</a>; never launch it just to make deployment appear available.</p></div></details>
+    </section>
+    <section class="section" id="smoke" aria-labelledby="smoke-title">
+      <div class="section-intro"><div><div class="eyebrow">05 · Hosted evidence</div><h2 id="smoke-title">Test the URL visitors actually receive.</h2></div><p>An upload success is not a verified release. Local browser evidence cannot prove hosted path behavior, asset availability or artifact identity.</p></div>
+      <details><summary>Say / do / paste: run an approved, non-mutating smoke test</summary><div class="detail-body"><p><strong>Say:</strong> “Use the actual returned public URL, not the source repo or local preview.” <strong>Do:</strong> approve that URL and exact non-mutating interactions. Use fictional data only; do not send or repeat real registrations, emails, purchases or other live actions. Uncertain side effects block submission.</p><p><strong>Paste:</strong> <a href="#smoke-prompt">Prompt 4</a>. <strong>Expect:</strong> PASS / FAIL / NOT RUN per check with revision, artifact, environment, timestamp and evidence. Compare source-to-artifact-to-host identity using available capabilities; label unverifiable matches.</p><p><strong>Check:</strong> entry, navigation, every intended nested path by direct URL and reload, unknown-path behavior, missing assets and intended Markdown/skill downloads. At 1440px and 375px inspect mobile layout, overflow, expanded disclosures, keyboard reachability, visible focus and new console errors.</p><p><strong>Check privacy:</strong> the workshop needs no backend. If a reviewed conference demo includes RSVP, verify its disclosure and approved network/storage/console evidence: no requests, persistence, entry logging or analytics payloads. <a href="../phase-2-spec/SPEC.md">Example D2/I6</a> forbids sending or saving; no real RSVP backend is implied.</p><p><strong>Decide:</strong> accept evidence or request a bounded correction/recovery for separate approval. <strong>Stop:</strong> public leakage, harmful side effects, broken critical paths or unexplained identity mismatch. Report the owner and urgency; do not silently redeploy or rollback.</p></div></details>
+    </section>
+    <section class="section" id="handoff" aria-labelledby="handoff-title">
+      <div class="section-intro"><div><div class="eyebrow">06 · Release + maintenance</div><h2 id="handoff-title">Leave enough to update and recover.</h2></div><p>The next maintainer needs source code, precise release evidence, verified update commands and named owners—not a secret dump or an optimistic summary.</p></div>
+      <details><summary>Say / do / expect: make the handoff usable</summary><div class="detail-body"><p><strong>Say:</strong> “Could someone maintain this without our chat?” <strong>Do:</strong> review Prompt 4's chat handoff against the template below. Distinguish source URL and deployed URL; record approved scope, commit/dirty state, artifact manifest, target/deployment identity, approvals, evidence and known gaps.</p><p><strong>Expect:</strong> verified update/build/check commands with working directory and allowed outputs; maintainer and access-management owner, approved access method without secrets, maintenance cadence, issue intake and next bounded action. Record recovery operator, trigger, prior good artifact or first-release strategy, target and required approval.</p><p><strong>Check:</strong> UNKNOWN and NOT RUN remain honest. No private transcripts, local machine paths or credentials in public handoffs. <strong>Decide:</strong> separately approve saving/sharing to an exact destination and audience. <strong>Stop:</strong> unknown ownership or unsupported recovery claims; do not auto-update Git, documentation or trackers.</p></div></details>
+      <details><summary>Illustrative release record · not an execution record</summary><div class="prompt-block"><div class="prompt-bar"><span class="prompt-label">RELEASE.md · fictional template</span><button class="btn btn--small" type="button" data-copy="expected-release" aria-describedby="release-copy-status" hidden>Copy release template</button></div><pre class="pad" id="expected-release" tabindex="0"># Illustrative release and maintenance handoff
+
+Status: FICTIONAL LESSON TEMPLATE — not a release, approval or execution record.
+Actual source repository URL: UNKNOWN — not published by this lesson.
+Actual deployed public URL: UNKNOWN — not deployed by this lesson.
+
+## Identity and ownership
+- Product/site and approved scope: UNKNOWN; choose workshop website or conference app.
+- Human release owner / maintenance owner / access owner: UNKNOWN / UNKNOWN / UNKNOWN.
+- Governing spec, review and decision references: UNKNOWN.
+- Source owner/name/visibility/default branch: UNKNOWN.
+- Source commit / branch / dirty tracked and untracked state: UNKNOWN.
+- Rights, attribution and human license choice: UNKNOWN; public is not a license grant.
+
+## Source and deployable package
+- Reviewed source-file allowlist and exclusions: UNKNOWN.
+- Reviewed artifact location, identity and exact file manifest: UNKNOWN.
+- Entry index.html, nested routes, CSS/logo and Markdown downloads: NOT RUN.
+- Actual build/update command and working directory, or no-build rationale: UNKNOWN.
+- Approved generated outputs and environment variable names only: UNKNOWN.
+- Public disclosure, secrets and personal-data review: NOT RUN.
+- Dependencies, dist, caches, env/secrets, local .devin config and outputs excluded from source: NOT RUN.
+- Reusable skill source individually reviewed; internal tests excluded from deployment: NOT RUN.
+
+## Target and permission ledger
+- Hosting account/target and available supported tool: UNKNOWN.
+- Native deployment eligibility / operator access confirmation: UNKNOWN.
+- Source publication approval for exact manifest and operations: UNKNOWN.
+- Public deployment approval for exact artifact, commit and target: UNKNOWN.
+- Native session approval if required: UNKNOWN; cloud transfer/cost approval is separate.
+- Deployment ID and returned-URL evidence: UNKNOWN; never substitute a local preview.
+
+## Verification evidence
+- Revision / artifact / environment / timestamp / reviewer: UNKNOWN.
+- Existing build, lint and test results with evidence references: NOT RUN.
+- Hosted entry, nested direct routes/reload, fallback and downloads: NOT RUN.
+- 1440px / 375px layout, expanded content, keyboard/focus and console: NOT RUN.
+- Missing assets and demo-only network/storage/privacy checks if applicable: NOT RUN.
+- Source-to-artifact-to-host identity match and capability limits: NOT RUN.
+- Known defects, exclusions, blockers and release decision: UNKNOWN.
+
+## Rollback and ongoing maintenance
+- Before deployment: retain approved artifact, manifest and evidence; preparation PENDING.
+- Prior known-good deployment/artifact: UNKNOWN; first deployment has no previous version.
+- First-release recovery: choose host-supported unpublish/disable or reviewed fix-forward; PENDING.
+- Recovery target, operator, trigger, supported procedure and separate approval: UNKNOWN.
+- Recovery verification and evidence retention plan: UNKNOWN; recovery NOT RUN.
+- Verified update/rebuild/check commands, working directory and allowed outputs: UNKNOWN.
+- Access/credential management owner and approved access method: UNKNOWN; never include secrets.
+- Maintenance cadence, issue intake, next bounded action and responsible human: UNKNOWN.
+- Documentation save/share approval and intended audience: UNKNOWN.
+</pre><p class="copy-status" id="release-copy-status" role="status">Read or select the template directly; copying it records no actual release.</p></div></details>
+    </section>
+    <section class="section" id="prompts" aria-labelledby="prompts-title">
+      <div class="section-intro"><div><div class="eyebrow">07 · Bounded requests</div><h2 id="prompts-title">Preview first. Execute only after approval.</h2></div><p>Replace bracket fields with reviewed references. Missing inputs mean blockers. Each publication, deployment, cloud launch and rollback has its own permission boundary. <a href="PROMPT.md">Download all four prompts</a>.</p></div>
+      <details><summary>Prompt 1 / Read-only release readiness</summary><div class="prompt-block"><div class="prompt-bar"><span class="prompt-label">Inspect · do not write</span><button class="btn btn--small" type="button" data-copy="release-prompt" aria-describedby="readiness-copy-status" hidden>Copy readiness prompt</button></div><pre class="pad" id="release-prompt" tabindex="0">Perform a read-only release-readiness review for [exact product/site] in [authorized repository] using [approved scope and Phase 5 evidence]. First distinguish the workshop teaching website from the DesignCraft conference application; stop if the intended product is ambiguous. Name the human release owner and governing source of truth, including approval references.
+
+Inspect the current commit, branch, dirty tracked/untracked state, and exact proposed artifact manifest separately from the source-repository allowlist. Report the discovered build command, working directory, required environment names without values, and proposed generated outputs; do not execute builds or write anything. For a plain static package, explain whether a build is unnecessary. Check its entry index.html, nested paths, shared assets and intended downloadable Markdown against the manifest. Do not treat website/dist or the whole workspace as automatically deployable.
+
+Summarize existing verification evidence by revision, environment and timestamp; mark missing checks NOT RUN. Identify license/rights decisions, public-disclosure risks, secrets/data exclusions, known gaps, intended hosting target, capability/access uncertainties and rollback preparation, including a first-release strategy. Report ready or blocked with exact next approvals and operator actions. Do not install, configure, stage, commit, publish, deploy, launch cloud work, update trackers or repair files.</pre><p class="copy-status" id="readiness-copy-status" role="status">Read or select the prompt directly. Confirm read scope first.</p></div></details>
+      <details><summary>Prompt 2 / Preview source-repository publication</summary><div class="prompt-block"><div class="prompt-bar"><span class="prompt-label">Exact public source scope</span><button class="btn btn--small" type="button" data-copy="repository-prompt" aria-describedby="repository-copy-status" hidden>Copy repository prompt</button></div><pre class="pad" id="repository-prompt" tabindex="0">Preview source publication for [exact product] to [human owner/account]/[repository name] with [explicit visibility]. Read only [authorized source scope]. Produce the exact included-file manifest and exclusions for review, separately from the deployable artifact. Confirm the intended default branch and current revision/dirty state. Never use broad staging such as git add . or copy a private repository wholesale.
+
+Review public disclosure and rights for code, teaching Markdown, images, fonts, attribution and reusable skills. Exclude dependencies, dist, caches, environment files, secrets, local .devin configuration and outputs. Include only individually reviewed reusable skill source where intended links need it. Propose README setup/update instructions, maintainer ownership, and a human license decision; do not automatically add a license. Public visibility is not an open-source license grant or deployment.
+
+Stop for explicit approval naming owner, name, visibility, manifest and exact Git/publication operations. Do not stage, commit, create or push beforehand. After that approval, perform only the approved batch through supported tools; ask the operator about missing access without revealing credentials. Verify remote identity, visibility, default branch, commit and source URL from real output. On ambiguous or partial remote failure, stop and reconcile state before retrying. No deployment or tracker changes.</pre><p class="copy-status" id="repository-copy-status" role="status">Read or select the prompt directly. Publication starts with a preview.</p></div></details>
+      <details><summary>Prompt 3 / Preview, then separately approve deployment</summary><div class="prompt-block"><div class="prompt-bar"><span class="prompt-label">One artifact · one target</span><button class="btn btn--small" type="button" data-copy="deploy-prompt" aria-describedby="deploy-copy-status" hidden>Copy deployment prompt</button></div><pre class="pad" id="deploy-prompt" tabindex="0">Prepare a deployment preview for [exact product], [reviewed artifact and manifest], [source commit/dirty-state evidence], and [exact public hosting target/account]. Do not deploy yet. Confirm entry index.html, nested paths, assets, exclusions, verification gaps and the prepared rollback operator/strategy. The source repository URL is not the hosted URL; a local browser preview is not public hosting.
+
+Inspect deployment tools actually available in this session and operator-confirmed account settings. Devin native deployment is intended for small standalone apps; static directories need index.html. It is available to non-enterprise organizations with secure mode off, not enterprise or secure-mode sessions. Never weaken security policy. Existing applications generally use their own approved CI/CD; native static compatibility is not guaranteed. If unavailable, propose approved own hosting or a manual prepared release and stop. Ask about access/authentication without exposing credentials; do not install, configure, add services or launch cloud work. Cloud handoff needs separate transfer/cost approval.
+
+Request explicit session approve/deny for this exact target, artifact, commit and manifest, plus any native deployment approval. Only after confirmation use supported tools for that artifact alone. Return the actual public URL, deployment ID if available and evidence; never guess. On partial failure stop before retrying and resolve remote state. No Git or tracker changes.</pre><p class="copy-status" id="deploy-copy-status" role="status">Read or select the prompt directly. No supported tool means stop, not a guessed URL.</p></div></details>
+      <details><summary>Prompt 4 / Smoke test and maintenance handoff</summary><div class="prompt-block"><div class="prompt-bar"><span class="prompt-label">Evidence · no automatic recovery</span><button class="btn btn--small" type="button" data-copy="smoke-prompt" aria-describedby="smoke-copy-status" hidden>Copy smoke-test prompt</button></div><pre class="pad" id="smoke-prompt" tabindex="0">Review [approved actual public URL] for [exact product/release] using only [explicitly approved non-mutating browser interactions] and fictional data. Confirm it is the returned hosted target, not localhost or a source repository. Do not send or repeat real registrations, emails, purchases or other live actions. If interaction side effects are uncertain, stop before submitting.
+
+Check the entry page, navigation, intended nested routes by direct entry and reload, unknown-path behavior, missing assets and downloadable materials. At 1440px and 375px inspect overflow, expanded content, keyboard reachability, visible focus and browser console errors. Where demo RSVP exists, verify its disclosure and local-only behavior through approved network/storage inspection: no requests, persistence, entry logging or analytics payloads. The workshop teaching website needs no backend; a conference demo does not authorize a real RSVP service.
+
+Compare source commit and artifact identity with deployment evidence to the extent hosting capabilities allow; label unverifiable matches. Report PASS, FAIL or NOT RUN per check with revision, environment, timestamp and evidence. In chat, draft a handoff naming source URL separately from hosted URL, maintainer, verified update commands, access owner without secrets, next actions and rollback operator, prior good artifact, target and required approval. First deployment may have no previous version. Do not rollback, redeploy, write documentation or change anything without separate authorization.</pre><p class="copy-status" id="smoke-copy-status" role="status">Read or select the prompt directly. Confirm the target and interaction boundaries.</p></div></details>
+    </section>
+    <section class="section" id="checklist" aria-labelledby="checklist-title">
+      <div class="section-intro"><div><div class="eyebrow">08 · Human review</div><h2 id="checklist-title">Record the evidence, not confidence.</h2></div><p>Each check can record real evidence or an explicit rehearsal blocker. Nothing here inspects files, approves a release or invokes tools.</p></div>
+      <div class="flow-detail"><fieldset class="checklist"><legend>Release review checkpoint</legend>
+        <label><input type="checkbox" autocomplete="off">Exact product, approved scope, source of truth and human release owner are identified.</label>
+        <label><input type="checkbox" autocomplete="off">Source owner/name/visibility, file allowlist, exclusions, disclosure and license/rights decisions are reviewed.</label>
+        <label><input type="checkbox" autocomplete="off">Exact artifact, revision/dirty state, entry, shared assets, nested paths and intended downloads are accounted for.</label>
+        <label><input type="checkbox" autocomplete="off">Target, actual tool/account availability and separate explicit deployment approval gate are understood.</label>
+        <label><input type="checkbox" autocomplete="off">Recovery operator, prior good artifact or first-release strategy and rollback approval boundary are prepared or blocked explicitly.</label>
+        <label><input type="checkbox" autocomplete="off">Hosted smoke checks record PASS, FAIL or NOT RUN with privacy, viewport, keyboard, console and route evidence.</label>
+        <label><input type="checkbox" autocomplete="off">Handoff separates source/hosted URLs and records update commands, owners, known gaps and the next bounded action.</label>
+      </fieldset><div class="flow-detail-right completion"><div class="eyebrow">Your review</div><progress id="review-progress" max="7" value="0" aria-label="Checklist completion" hidden></progress><p id="review-status" role="status">Review the evidence and record blockers.</p><h3 id="next-title">First, review the release.</h3><p>Then decide the exact publication, deployment, correction or handoff action to authorize. Review completion is not execution permission.</p><p class="muted">Selections reset on reload and are reversible. An honest blocked release is a useful outcome. Keep UNKNOWN where real evidence is absent.</p></div></div>
+    </section>
+    <details><summary>Primary sources and facilitator materials</summary><ul class="sources">
+      <li><a href="LESSON.md">Facilitator walkthrough: say, do, paste, expect, decide, check and stop</a></li>
+      <li><a href="https://docs.devin.ai/product-guides/deployment-capabilities">Devin: official deployment capabilities and availability</a></li>
+      <li><a href="../phase-5-build/index.html#cloud">Phase 5: separately approved cloud handoff, transfer and cost</a></li>
+      <li><a href="../phase-4-plan/PLAN.md">Phase 4: illustrative architecture, scope and host-route checks</a></li>
+      <li><a href="../phase-2-spec/SPEC.md">Phase 2: fictional conference demo and privacy boundary</a></li>
+    </ul></details>
+    <footer><div class="footer"><div><h4>Design to Ship</h4><p>Phase 6 · Ship + handoff.<br>A reviewed release. A reliable next step.</p></div><div><h4>Lesson materials</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="LESSON.md">Facilitator script</a></li><li><a href="PROMPT.md">Four bounded prompts</a></li><li><a href="RELEASE.md">Illustrative release template</a></li></ul></div><div><h4>Revisit the evidence</h4><ul><li><a href="../phase-5-build/index.html">Phase 5 · Build + review</a></li><li><a href="../phase-4-plan/index.html">Phase 4 · Plan</a></li><li><a href="../skills/index.html">Skills companion</a></li></ul></div></div><div class="footer-bottom"><span>Idea → Spec → Design → Plan → Build → Ship</span><span>Plain HTML · No automatic execution</span></div></footer>
+  </div></main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const source = document.getElementById(button.dataset.copy);
+        const status = document.getElementById(button.getAttribute('aria-describedby'));
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          status.textContent = 'Copied. Replace placeholders and confirm the scope before using.';
+        } catch {
+          let disclosure = source.closest('details');
+          while (disclosure) {
+            disclosure.open = true;
+            disclosure = disclosure.parentElement.closest('details');
+          }
+          source.focus();
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C to copy.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+    const checks = [...document.querySelectorAll('.checklist input')];
+    const progress = document.getElementById('review-progress');
+    progress.hidden = false;
+    const updateReview = () => {
+      const completed = checks.filter(check => check.checked).length;
+      progress.value = completed;
+      document.getElementById('review-status').textContent = `${completed} of ${checks.length} checks confirmed`;
+      document.getElementById('next-title').textContent = completed === checks.length
+        ? 'Review recorded. Authorize the next step separately.'
+        : 'First, review the release.';
+    };
+    checks.forEach(check => {
+      check.checked = false;
+      check.addEventListener('change', updateReview);
+    });
+    updateReview();
+  </script>
+</body>
+</html>

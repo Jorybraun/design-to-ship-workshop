@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Phase 3 of Design to Ship: inspect existing assets, build a starter design system and specimen, then apply and refine them in an HTML or Figma prototype.">
+  <title>Phase 3 · Design System — Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26, 26, 26, 0.72); --ink-faint: rgba(26, 26, 26, 0.66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section, article { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .compare > * { min-width: 0; }
+    .hero-left h1 { max-width: 12ch; }
+    .hero-links a { gap: 16px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    .phase-path a, .source-link { text-underline-offset: 4px; }
+    .section-intro h2 { max-width: 18ch; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.86rem; line-height: 1.65; margin: 0; }
+    .walkthrough { padding: 0; }
+    details { border-bottom: 1px solid var(--hairline); }
+    summary { cursor: pointer; padding: var(--rhythm); font-weight: 500; }
+    summary::marker, details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p { margin-top: 12px; }
+    .detail-body pre { margin: 12px 0; padding: 16px; background: var(--ground); border: 1px solid var(--hairline); }
+    .script-step + .script-step { margin-top: 20px; }
+    .script-step .eyebrow { margin-bottom: 8px; }
+    .notes { display: flex; flex-direction: column; gap: 24px; }
+    .notes h3, .compare-cell h3 { margin: 12px 0; }
+    .notes ul, .detail-body ul { padding-left: 20px; }
+    .concepts { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hairline); }
+    .concepts .card { min-height: 200px; }
+    .concepts .card:last-child { border-right: 0; }
+    .mcp-flow { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: var(--rhythm); border-top: 1px solid var(--hairline); font-family: var(--font-mono); font-size: 0.86rem; }
+    .mcp-flow span:not([aria-hidden]) { padding: 10px 14px; background: var(--ground-2); border: 1px solid var(--hairline); }
+    .compare-cell .btn { margin-top: 20px; }
+    .prototype-boundary { padding: var(--rhythm); border-top: 1px solid var(--hairline); background: var(--ground-2); }
+    .prompt-block, .example-output { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .prompt-entry { border-top: 1px solid var(--hairline); }
+    .source-link { font-size: 0.85rem; }
+    .copy-status { font-size: 0.85rem; min-height: 1.6em; color: var(--ink-soft); padding: 0 var(--rhythm) 12px; }
+    .checklist { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .checklist legend { padding: var(--rhythm); font-weight: 500; }
+    .checklist label { display: flex; gap: 14px; padding: 16px var(--rhythm); border-top: 1px solid var(--hairline); cursor: pointer; align-items: start; }
+    .checklist input { flex: 0 0 auto; width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { background: var(--ground); }
+    .completion { display: flex; flex-direction: column; gap: 18px; }
+    .completion h3 { font-size: 1.8rem; line-height: 1.2; }
+    progress { width: 100%; height: 8px; accent-color: var(--accent); }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
+      .nav-links a { padding: 0 7px; font-size: 0.85rem; }
+      .phase-path li { min-width: 33%; font-size: 0.7rem; padding: 12px; }
+      .hero-left h1 { padding-top: 2.5rem; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+      .concepts { grid-template-columns: 1fr; }
+      .concepts .card { min-height: 0; border-right: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson</a>
+  <header class="outer">
+    <nav class="nav container" aria-label="Lesson navigation">
+      <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a>
+      <span class="nav-spacer"></span>
+      <ul class="nav-links"><li><a href="#mcp">MCP</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#prompts">Prompts</a></li><li><a href="#checklist">Review</a></li></ul>
+    </nav>
+  </header>
+  <main class="outer" id="main">
+    <div class="container">
+      <ol class="phase-path" aria-label="Workshop phases">
+        <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+        <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+        <li aria-current="step">03 / Design system</li>
+        <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+        <li>05 / Build + review</li>
+      </ol>
+      <section class="hero" aria-labelledby="lesson-title">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <div class="eyebrow">Phase 03 · Starter design system</div>
+            <h1 id="lesson-title">Build the system.<br>Then the page.</h1>
+            <p class="lead">Inspect what exists. Reuse, adapt, or create the smallest useful foundations. Review a specimen, apply it to one landing page, then refine both together.</p>
+          </div>
+          <div class="hero-right">
+            <div class="pad"><ul class="hero-list">
+              <li><span>Starting point</span><span>Approved SPEC.md + existing assets</span></li>
+              <li><span>Example product</span><span>DesignCraft conference site</span></li>
+              <li><span>Small slice</span><span>Landing page · desktop + mobile</span></li>
+              <li><span>Method + access</span><span>Foundations skill + MCP</span></li>
+              <li><span>Outcome</span><span>Assets, specimen, prototype + guide</span></li>
+            </ul></div>
+            <p class="hero-statement">A starter system in use.<br>Not an <em>enterprise library.</em></p>
+            <div class="hero-links"><a class="hero-link hero-link--primary" href="#walkthrough">Start the walkthrough <span aria-hidden="true">→</span></a><a class="hero-link" href="#paths">Choose your path <span aria-hidden="true">→</span></a></div>
+          </div>
+        </div>
+        <p class="prototype-boundary"><strong>You are viewing the lesson website.</strong> DesignCraft is the separate fictional conference product. Opening this lesson creates no design system, specimen, conference prototype, or Figma design. The example specification and handoff are not participant-approved requirements.</p>
+      </section>
+      <section class="section" id="mcp" aria-labelledby="mcp-title">
+        <div class="section-intro"><div><div class="eyebrow">01 · Method versus tool access</div><h2 id="mcp-title">A skill guides. MCP connects.</h2></div><p>MCP stands for <strong>Model Context Protocol</strong>. It standardizes how an AI application connects to servers that expose tools, resources, and prompt templates. It is not another model, unrestricted access, or a substitute for design judgment.</p></div>
+        <div class="concepts">
+          <article class="card"><h3>Prompt</h3><p>What you want this time.<br>“Inspect our existing assets and propose the smallest foundations for this landing page.”</p></article>
+          <article class="card"><h3>Skill</h3><p>A reusable method.<br>The project-local <a href="../.devin/skills/design-system-foundations/SKILL.md">design-system-foundations skill</a> guides inspection, inventory approval, and a specimen. Phase 2’s spec-grilling skill is a separate idea, not installed by this step.</p></article>
+          <article class="card"><h3>MCP connection</h3><p>Access to exposed capabilities.<br>Read a Figma frame or create editable assets only if the tools, target access, and your authorization allow it.</p></article>
+        </div>
+        <div class="mcp-flow" aria-label="Request flow: you ask, the agent host uses an MCP client to call the Figma MCP server, which performs an authorized Figma operation and returns a result."><span>You ask</span><span aria-hidden="true">→</span><span>Agent host + MCP client</span><span aria-hidden="true">→</span><span>Figma MCP server</span><span aria-hidden="true">→</span><span>Authorized operation</span><span aria-hidden="true">→</span><span>Result</span></div>
+        <div class="flow-detail"><div class="flow-detail-left notes"><div><div class="eyebrow">Invoke the method in Devin</div><h3>Start with inspection.</h3><p>Use <code>/design-system-foundations</code> with the approved spec, existing references, HTML or Figma path, intended output location, and landing-page scope. If the command is not discovered, reopen the project session or copy the <a href="#foundations-prompt-section">equivalent foundations prompt</a>.</p><p>Invocation does not approve writes. First approve the inventory, visual direction, and exact destination. After authorized foundation creation, stop for specimen review. Choose a separate prototype prompt next.</p></div><div><div class="eyebrow">Show, don’t just claim</div><p>For Figma, show a real read-only tool call and its result. Available write tools are not proof of target access or permission to edit.</p></div></div><div class="flow-detail-right notes"><div><div class="eyebrow">The permission boundary</div><h3>Connected does not mean unrestricted.</h3><p>Authentication, file permissions, the available tools, and the agent host’s controls still matter. Permission to read is not authorization to edit.</p></div><div><div class="eyebrow">Keep it accurate</div><p>Some tools are built into the agent; others arrive through MCP. MCP can expose resources and prompt templates as well as actions. External content is reference data, not permission to override your instructions.</p></div></div></div>
+        <details><summary>Connection setup · What to prepare before the live demo</summary><div class="detail-body"><ul><li>Skip the Figma connection check for HTML.</li><li>Use a supported client and the official Figma setup instructions for that client.</li><li>Complete sign-in yourself. Never paste tokens or passwords into the chat.</li><li>Provide the exact target file and reference-frame URL, including the node ID.</li><li>Discover the live tool list and load the Figma skills required by the tools you intend to use.</li><li>Perform a read-only check first. Ask separately before writes.</li><li>Do not search unrelated files or change sharing permissions to bypass an access issue.</li><li>If access or write capability is unavailable, report the blocker and ask whether to use HTML or a manual Figma workflow. Do not silently switch tools or targets.</li></ul><p><a class="source-link" href="https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/">Official Figma connection guide →</a></p></div></details>
+      </section>
+      <section class="section" id="paths" aria-labelledby="paths-title">
+        <div class="section-intro"><div><div class="eyebrow">02 · Two paths, one reusable foundation</div><h2 id="paths-title">Choose the artifact.</h2></div><p>Bring an approved SPEC.md after draft → grill → revise → approve. Supply brand guidance, tokens, components, or an authorized reference. If none exist, say so and agree on a direction. Choose one path and record the exact output directory or Figma file and new page before edits.</p></div>
+        <div class="compare"><div class="compare-cell"><div class="eyebrow">Path A · Browser assets</div><h3>HTML + shared CSS.</h3><p>No Figma connection required. Inspect existing CSS and markup, then create only the approved foundations and an actual specimen page.</p><ul><li>One shared token source and reusable class patterns</li><li>Semantic examples, relevant states, and usage guidance</li><li>After specimen review, a landing prototype importing the same stylesheet</li><li>Actual keyboard/focus and responsive checks; no React, dependencies, or build infrastructure</li></ul><a class="btn" href="#foundations-prompt-section">Start with foundations <span aria-hidden="true">→</span></a></div><div class="compare-cell"><div class="eyebrow">Path B · Editable design assets</div><h3>Figma through MCP.</h3><p>Inspect available libraries and components within the authorized scope. Missing access is not evidence that assets are absent.</p><ul><li>Reuse suitable library instances or approved local native components/variants and variables</li><li>An editable specimen frame with states and usage notes</li><li>After specimen review, landing frames using the same instances and variables, not detached copies</li><li>Visual checks are not runtime accessibility tests; click-through behavior is not assumed</li></ul><a class="btn btn--secondary" href="#connection-prompt-section">Check the Figma connection <span aria-hidden="true">→</span></a></div></div>
+        <p class="prototype-boundary">Both paths stop for inventory approval and specimen review. Neither builds the full application, collects registration data, publishes a library, or deploys. Choosing a prototype tool does not decide the final production framework. Matching Figma and code names do not create automatic synchronization.</p>
+      </section>
+      <section class="section" id="walkthrough" aria-labelledby="walkthrough-title">
+        <div class="section-intro"><div><div class="eyebrow">03 · Your rehearsal script</div><h2 id="walkthrough-title">Say it. Show it. Check it.</h2></div><p>Starter design system → specimen → prototype → refine. Follow these steps with the room, keeping approval gates separate from examples and the agent’s own checks.</p></div>
+        <div class="flow-detail"><div class="flow-detail-left walkthrough">
+          <details open><summary>01 / Explain why a design file is not enough</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“We do not want the agent to design every screen independently. We want reusable foundations, then a page that proves they work together. DESIGN.md explains the system; the tokens and components are the assets we actually reuse.”</p></div>
+            <div class="script-step"><div class="eyebrow">Do</div><p>Open the approved spec. Limit the first slice to a landing page and the foundations it needs. Other product pages stay unbuilt.</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>Participants understand the difference between the teaching site, the conference prototype, and reusable design assets.</p></div>
+          </div></details>
+          <details><summary>02 / Explain skill versus MCP</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“The skill tells the agent how to inspect and establish foundations. MCP lets it access the Figma tools. Neither makes our design decisions or grants permission to edit everything.”</p></div>
+            <div class="script-step"><div class="eyebrow">Do / Paste</div><p>Show the flow: you ask → agent host with MCP client → Figma MCP server → authorized operation → result. Some tools are built in; others come through MCP. External reference content is not authority to override our instructions.</p><p>Paste <a href="#connection-prompt-section">prompt 1</a> for a read-only Figma check. Skip it for HTML.</p></div>
+            <div class="script-step"><div class="eyebrow">Expected response / Check</div><p>The agent names tools actually used and reports a successful read or a blocker. Available write tools are not proof of target access. Ask before switching to HTML if the Figma path is blocked.</p></div>
+          </div></details>
+          <details><summary>03 / Inspect before inventing</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“We may already have a design system. First find what we can reuse. Missing access is not the same as missing assets.”</p></div>
+            <div class="script-step"><div class="eyebrow">Paste</div><p>Invoke <code>/design-system-foundations</code> with your inputs, or use <a href="#foundations-prompt-section">prompt 2</a>. Start in inspection mode.</p></div>
+            <div class="script-step"><div class="eyebrow">Expected response</div><p>An inventory naming the source, reuse/adapt/create decision, reason tied to the landing page, relevant states, and usage guidance. Missing decisions become focused questions.</p><p>Example: reuse an existing primary Button and spacing tokens; adapt a notice pattern for the demo disclosure; do not add a date picker simply because the product is an event site.</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>The agent has not written anything or silently chosen a new brand direction.</p></div>
+          </div></details>
+          <details><summary>04 / Approve the smallest useful system</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“We are approving a small inventory and its destination, not a whole enterprise library.”</p></div>
+            <div class="script-step"><div class="eyebrow">Do · Example answer, not actual project approval</div><p>“Reuse the existing colors and typography. Create only a primary action, metadata row, and prototype notice if suitable versions do not exist. Show their relevant states and usage rules on a specimen. Write only in the agreed prototype folder or new Figma page. Do not publish anything.”</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>Both visual direction and exact edit scope are explicit. Include only relevant states; do not add loading/disabled variants to controls that have no such behavior.</p></div>
+          </div></details>
+          <details><summary>05 / Review actual foundations on a specimen page</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“A specimen page displays the system together: typography, tokens, patterns, states, and when to use each one. It is our reference for the next screen.”</p></div>
+            <div class="script-step"><div class="eyebrow">Expected output</div><ul><li>HTML: shared CSS custom properties and reusable class patterns, semantic HTML examples, and an actual specimen page. The next prototype imports the same stylesheet.</li><li>Figma: appropriate library instances or local native components/variants and variables, with an editable specimen frame and usage notes. Avoid detached copies of components that already fit.</li></ul></div>
+            <div class="script-step"><div class="eyebrow">Do / Check</div><p>Stop for designer review of the specimen before any landing prototype. Inspect contrast, legibility, token consistency, resizing, and relevant states. Verify keyboard/focus behavior in HTML. Figma annotations do not prove runtime accessibility. Ask for evidence and distinguish passed, failed, and not-run checks.</p></div>
+          </div></details>
+          <details><summary>06 / Apply the system to the landing page</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“Now we use the foundations instead of drawing a new set of styles for this screen.”</p></div>
+            <div class="script-step"><div class="eyebrow">Paste</div><p><a href="#html-prompt-section">Prompt 3 for HTML</a> or <a href="#figma-prompt-section">prompt 4 for Figma</a>, referencing the reviewed specimen and actual assets.</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>The page uses shared CSS definitions or native component instances/variables. Review at 1440px and 375px. Preserve approved content and demo notices. Annotate or explain unbuilt destinations instead of pretending the other routes work. No real RSVP data is collected or persisted.</p></div>
+          </div></details>
+          <details><summary>07 / Let the page expose gaps, then refine</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“A component can look fine in isolation and fail in a real layout. That is why we review the specimen and prototype together.”</p></div>
+            <div class="script-step"><div class="eyebrow">Example review comment</div><p>“The primary action's label wraps badly on mobile. Propose a change to its shared spacing rules, show the affected uses, and update both specimen and prototype after I approve. Do not patch just this one button with unrelated values.”</p></div>
+            <div class="script-step"><div class="eyebrow">Paste</div><p><a href="#review-prompt-section">Prompt 5</a>. The agent should propose the smallest justified extension, not redesign the library or add a catalog of unused components.</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>No one-off divergence. Re-check affected patterns at both sizes. Matching names in code and Figma are not automatic synchronization; record which source owns each decision.</p></div>
+          </div></details>
+          <details><summary>08 / Approve and hand off</summary><div class="detail-body">
+            <div class="script-step"><div class="eyebrow">Say</div><p>“Our deliverable is a starter design system in use: assets, a specimen, a prototype, and a short guide pointing to them. We are not claiming organization-wide readiness or a finished application.”</p></div>
+            <div class="script-step"><div class="eyebrow">Expected handoff / Do</div><p>Actual asset references, inventory, usage/state guidance, specimen and prototype references, path-appropriate review evidence, and DESIGN.md. Save only to the agreed location after approval; do not publish shared libraries or deploy.</p></div>
+            <div class="script-step"><div class="eyebrow">Check</div><p>Explicit designer approval before Phase 4 planning. The full conference routes, real registration, hosting, and production-system governance remain separate work.</p></div>
+          </div></details>
+        </div><div class="flow-detail-right notes"><div><div class="eyebrow">Input</div><h3>Inspect before creating.</h3><p>The approved specification sets the slice. Existing brand guidance, tokens, components, and authorized references shape the inventory. Inaccessible sources are not absent sources.</p></div><div><div class="eyebrow">Two stops</div><h3>Approval, then specimen review.</h3><p>Approve the minimal inventory, visual direction, and exact write scope before edits. Review the actual specimen before choosing the separate landing-page prompt.</p></div><div><div class="eyebrow">Reuse contract</div><h3>One source, multiple uses.</h3><p>Tokens and component definitions serve both specimen and prototype. Review changes in the shared source, not a one-off override. Record source ownership; there is no automatic Figma-code sync.</p></div><div><div class="eyebrow">Evidence</div><h3>Inspect what was created.</h3><p>Actual files or frame links, not invented URLs. Relevant states and usage rules, screenshots if captured, and honest passed, failed, or not-run checks. Figma visual inspection cannot prove browser accessibility.</p></div><div><div class="eyebrow">Boundary</div><h3>A starter, not a full product.</h3><p>DesignCraft’s schedule, speakers, and RSVP remain intended destinations. Do not collect real registration data, publish a shared library, or deploy. If Figma is blocked, ask before switching to HTML.</p></div></div></div>
+      </section>
+      <section class="section" id="prompts" aria-labelledby="prompts-title">
+        <div class="section-intro"><div><div class="eyebrow">04 · Copyable instructions</div><h2 id="prompts-title">The next thing to paste.</h2></div><p>Replace every bracketed input. Use an approved specification, not the teaching example unless explicitly adopted. These buttons only copy text; they do not execute a skill, connect to Figma, or create assets. Inspect → approve inventory → foundations and specimen → review → prototype → refine → approve.</p></div>
+        <article class="prompt-entry" id="connection-prompt-section">
+          <details open><summary>01 / Figma connection check · Read-only</summary><div class="prompt-block"><pre id="connection-prompt" tabindex="0" aria-label="Read-only Figma connection prompt">We are preparing a Figma design-system and prototype exercise. Inspect the available Figma MCP connection and list the relevant tools before calling them.
+
+Target: [paste the intended Figma file URL and a reference frame URL containing its node ID].
+
+Do not create or modify anything. Do not search unrelated files. If the connection is absent, authentication is required, or the target is missing, stop and tell me what I need to provide.
+
+Read the supplied reference frame using the available read tools and any required Figma skill guidance. Summarize its layout, typography, colors, and reusable components. Report which tools you actually used and whether reading succeeded. Distinguish available write tools from confirmed permission to edit the target; a tool listing alone does not prove access.
+
+Explain whether this connection can read designs, create editable components and frames, or both. If writes are unavailable, offer HTML or a manual Figma workflow. Do not silently substitute a different tool or target. Stop for my choice and authorization before any write.</pre></div></details>
+          <div class="prompt-bar"><span>Figma path only · skip for HTML · no changes authorized</span><button type="button" class="btn btn--small" data-copy="connection-prompt" aria-describedby="connection-copy-status" hidden>Copy connection check</button></div><p class="copy-status" id="connection-copy-status" role="status"></p>
+        </article>
+        <article class="prompt-entry" id="foundations-prompt-section">
+          <details><summary>02 / Foundations method · Skill-equivalent prompt</summary><div class="prompt-block"><pre id="foundations-prompt" tabindex="0" aria-label="Design-system foundations prompt">Help me establish the smallest reusable design foundation for this project, not an organization-wide component library.
+
+Inputs:
+Approved specification: [path or supplied text].
+Existing brand, tokens, components, and visual reference: [paths or authorized Figma references; state if none exist].
+Chosen path: [HTML or Figma].
+Proposed output location: [separate project folder or Figma file and new page name].
+Initial application slice: landing page, desktop and mobile.
+
+Inspect before creating. Ask one focused question at a time when the specification, visual direction, assets, or target is missing. Identify existing tokens and components. For Figma, discover tools, load the required guidance, search the available design system, and inspect its libraries within the authorized scope. Report inaccessible sources rather than treating them as absent.
+
+Propose a small inventory with: pattern, source, reuse/adapt/create decision, reason tied to the slice, relevant variants and states, and a usage rule. Include foundations for typography, semantic color roles, spacing, borders, and layout. Do not add components or states only to fill a catalog. Do not change product requirements.
+
+Stop for explicit approval of the inventory, visual direction, and exact write location before editing anything. Approval of a reference or a read does not authorize writes.
+
+After approval, create only the agreed foundation assets and a specimen page displaying them together. In HTML, use shared CSS tokens and reusable class patterns with semantic markup; no React, dependencies, or deployment. In Figma, reuse appropriate library components or create local native components/variants and variables; show instances on an editable specimen frame. Do not detach suitable instances or publish shared-library changes. Preserve existing work; ask before overwriting or expanding scope.
+
+Show relevant states and explain when to use each pattern. Check contrast, legibility, consistent tokens, and resizing. Test actual keyboard/focus behavior in HTML; distinguish Figma annotations from browser accessibility evidence. Report checks as performed, failed, or not run.
+
+Return the actual asset and specimen references, the inventory, usage guidance, verification evidence, and a short DESIGN.md draft pointing to the source of truth. Do not claim matching names automatically synchronize Figma and code. Stop for designer review of the specimen. Do not build the landing page or other product routes yet; we will apply these foundations in the next step.</pre></div></details>
+          <div class="prompt-bar"><span>Either path · approve inventory before edits · stop at specimen review</span><button type="button" class="btn btn--small" data-copy="foundations-prompt" aria-describedby="foundations-copy-status" hidden>Copy foundations prompt</button></div><p class="copy-status" id="foundations-copy-status" role="status"></p>
+        </article>
+        <article class="prompt-entry" id="html-prompt-section">
+          <details><summary>03 / HTML prototype · Use the reviewed foundations</summary><div class="prompt-block"><pre id="html-prompt" tabindex="0" aria-label="HTML prototype prompt">Context:
+We have an approved specification and reviewed starter design-system assets. Apply them to one disposable landing-page prototype, not the complete application.
+
+References:
+Approved specification: [path or supplied text].
+Reviewed tokens, reusable CSS patterns, specimen page, and visual reference: [actual paths or supplied artifacts].
+Authorized output folder: [separate prototype directory, not the lesson folders].
+
+Task:
+Read the references first. Ask about missing inputs or conflicting decisions. Create one responsive landing page using plain HTML, CSS, and only necessary JavaScript. Use the same shared token definitions and component classes as the specimen rather than copying independent values. If a real layout exposes a missing variant, explain the gap and ask before extending the foundations; update the specimen when that change is approved.
+
+Constraints:
+Do not use React, install dependencies, change the specification, edit the workshop site, or build other routes. Preserve approved copy and fictional/demo notices. Label the page as a prototype. Do not collect, send, or persist registration information. Unbuilt-route controls must explain their intended destination accessibly instead of navigating to a broken page. Ask before overwriting existing work. Do not deploy.
+
+Verification:
+Review specimen and prototype together at 1440px and 375px widths. Check content, hierarchy, shared token use, relevant states, contrast, overflow, keyboard focus, and every visible control. Capture evidence and report console errors. Do not claim unperformed checks passed.
+
+Deliverable:
+Provide actual specimen, shared-style, and prototype file paths; screenshots if captured; the limitations; and an updated DESIGN.md draft with sources, patterns, usage rules, responsive behavior, and review findings. Stop for approval. A working prototype is not a finished conference application.</pre></div></details>
+          <div class="prompt-bar"><span>Shared CSS sources · separate prototype folder · no deployment</span><button type="button" class="btn btn--small" data-copy="html-prompt" aria-describedby="html-copy-status" hidden>Copy HTML prompt</button></div><p class="copy-status" id="html-copy-status" role="status"></p>
+        </article>
+        <article class="prompt-entry" id="figma-prompt-section">
+          <details><summary>04 / Figma prototype · Use the reviewed foundations</summary><div class="prompt-block"><pre id="figma-prompt" tabindex="0" aria-label="Figma prototype prompt">Context:
+We have an approved specification, reviewed starter design-system assets, and a checked Figma MCP connection. Apply those assets to an editable landing-page prototype only.
+
+References:
+Approved specification: [path or supplied text].
+Reviewed foundation/specimen and visual-reference frames: [node-specific URLs].
+Authorized target file and new prototype page: [file URL and unique page name].
+
+Task:
+Confirm inputs and exact write scope before editing. Discover tools, load required Figma skills, and inspect the referenced components, variables, and libraries. Create native landing frames at 1440px and 375px widths using instances and shared variables from the reviewed foundations, not detached duplicates or flattened screenshots. If a missing variant appears, propose the smallest extension and ask before changing the system or specimen.
+
+Constraints:
+Keep existing pages untouched unless a specific change is approved. Ask if the target page name already exists. Do not delete, change sharing, publish library changes, deploy, or build other routes. Preserve approved copy and demo notices. Annotate intended destinations and unbuilt behavior. Only claim click-through connections if the tools support them and you created and tested them. Stop on missing access or write capability; do not fabricate an artifact.
+
+Verification:
+Read back and render the specimen and both landing frames. Compare content, hierarchy, legibility, component instances, variables, states, and resizing with the approved references. Distinguish Figma visual inspection from browser accessibility and runtime tests. Matching names are not evidence of automatic design/code synchronization.
+
+Deliverable:
+Return actual foundation, specimen, and prototype links; screenshots if obtained; reused components; and an updated DESIGN.md draft in the conversation with usage rules, responsive behavior, limits, and performed checks. Stop for review. Do not claim the full application or functional RSVP exists.</pre></div></details>
+          <div class="prompt-bar"><span>Shared instances and variables · authorized new page</span><button type="button" class="btn btn--small" data-copy="figma-prompt" aria-describedby="figma-copy-status" hidden>Copy Figma prompt</button></div><p class="copy-status" id="figma-copy-status" role="status"></p>
+        </article>
+        <article class="prompt-entry" id="review-prompt-section">
+          <details><summary>05 / Review and refine · Specimen and prototype together</summary><div class="prompt-block"><pre id="review-prompt" tabindex="0" aria-label="Design-system and prototype review prompt">Review this starter design system and its landing-page prototype against the approved specification and visual direction.
+
+Foundations and specimen: [actual file paths or Figma URLs].
+Prototype: [actual entry-file path or Figma frame URLs].
+Specification and reference: [paths, URLs, or supplied artifacts].
+
+Identify the most consequential inconsistency or missing pattern exposed by the prototype. Distinguish product requirements, visual preferences, and genuine reuse needs. Suggest a precise change to the shared source, identify affected usages, and ask for approval. Do not add a general-purpose component catalog or alter requirements to excuse a mismatch.
+
+After approval, update only the authorized assets, specimen, and affected prototype usages. Re-check both sizes with path-appropriate tools. Record remaining limitations and checks not run. When I explicitly approve the direction, provide the final DESIGN.md content with links to actual reusable assets, specimen, prototype, and usage guidance. Ask before saving or overwriting. Do not publish a library, deploy, or start the full application.</pre></div></details>
+          <div class="prompt-bar"><a class="source-link" href="PROMPT.md">All five prompts in Markdown</a><button type="button" class="btn btn--small" data-copy="review-prompt" aria-describedby="review-copy-status" hidden>Copy review prompt</button></div><p class="copy-status" id="review-copy-status" role="status"></p>
+        </article>
+      </section>
+      <section class="section" id="output" aria-labelledby="output-title">
+        <div class="section-intro"><div><div class="eyebrow">05 · Expected output</div><h2 id="output-title">A starter system in use.</h2></div><p>DESIGN.md is documentation, not the design system itself. Leave with actual reusable assets, relevant states and usage guidance, a specimen, and a landing prototype using the same sources. This is a starter for one project, not an organization-wide production library.</p></div>
+        <div class="flow-detail"><div class="flow-detail-left notes"><div><div class="eyebrow">HTML path</div><h3>Shared styles. Two real pages.</h3><p>One shared stylesheet with semantic tokens and reusable class patterns, a specimen with semantic examples, and a responsive landing prototype importing that same stylesheet. Show relevant states, usage rules, keyboard behavior, and unbuilt-route explanations.</p></div><div><div class="eyebrow">Figma path</div><h3>Actual assets and editable frames.</h3><p>Appropriate library instances or local native components/variants and variables, an editable specimen, and desktop/mobile landing frames reusing those sources. Return actual links and honest interaction limits. Detached copies or screenshots alone are not reusable components.</p></div></div><div class="flow-detail-right notes"><div><div class="eyebrow">Both paths</div><h3>DESIGN.md + review record.</h3><p>Record asset provenance, reuse/adapt/create inventory, token authority, usage/state guidance, specimen and prototype references, performed checks, evidence, and limitations. Review shared-source changes in both artifacts and obtain explicit designer approval. Matching names do not automatically synchronize Figma and code.</p></div><div><div class="eyebrow">Example, not evidence</div><p>The document below illustrates a handoff using the workshop theme only if explicitly chosen. It does not claim that reusable assets, a specimen, a conference prototype, or a Figma file have been generated. Save the actual handoff only to the agreed location after approval.</p></div></div></div>
+        <details class="example-output" id="full-design"><summary>Read the example starter-system handoff · DESIGN.md</summary><div class="detail-body"><pre id="expected-design" tabindex="0" aria-label="Example starter design-system handoff"># DesignCraft — Example Starter Design-System Handoff
+
+Status: illustrative expected output, not an approved system or evidence of generated assets.
+This example assumes the participant explicitly chose the workshop's visual style. Replace it when a different direction is approved.
+DESIGN.md documents the system; the reusable assets, specimen, and prototype must actually exist separately. This is a project starter, not a production organization-wide library.
+
+## 1. Scope and specification
+
+Prototype: landing page only, reviewed at 1440px and 375px widths.
+Product reference: the approved project SPEC.md; confirm its location before use.
+Teaching reference: the fictional DesignCraft example in ../phase-2-spec/SPEC.md is not automatically approved.
+Keep the approved event name, date, city, fictional-event notice, and CTA wording. Schedule, speakers, and RSVP are planned destinations, not implemented pages in this prototype.
+
+## 2. Visual reference and tokens
+
+Example reference: ../website/src/index.css, the workshop site's existing styles.
+These values are an illustrative choice, not a required design for every participant.
+
+- Background: #F4F0E8
+- Secondary surface: #EBE6DC
+- Raised surface: #FFFFFF
+- Primary text: #1A1A1A
+- Accent: #003399
+- Supporting text: rgba(26, 26, 26, 0.72)
+- Border: rgba(26, 26, 26, 0.22)
+- Body font: IBM Plex Sans with a system sans-serif fallback
+- Metadata font: IBM Plex Mono with a system monospace fallback
+- Body size: 17px; line height: 1.55
+- Headline: fluid between 40px and 66px; line height: 1.05
+- Spacing: 8, 12, 16, 21, 32, 48, 64px
+- Container maximum: 1280px
+- Corner radius: 0
+
+Check contrast on the actual foreground/background combinations. Example values alone are not an accessibility test. Confirm fonts are available in the chosen environment before creating text objects or relying on downloads.
+
+## 3. Layout rules
+
+- Desktop: two-column landing hero with event identity on the left and event details plus primary action on the right.
+- Mobile: one reading column; event identity, details, notice, then primary action. Do not hide the notice to fit the viewport.
+- Use 21px inner padding; preserve at least 10px outer gutters on narrow screens.
+- Wrap navigation without horizontal page overflow. Keep controls keyboard reachable in an HTML implementation.
+- The main CTA has the strongest action emphasis; supporting links remain secondary.
+
+## 4. Minimal inventory and usage
+
+Illustrative inventory after inspection; these are candidates, not assets already created:
+
+| Pattern | Decision and source | Relevant states | Usage rule |
+| --- | --- | --- | --- |
+| PrimaryAction | Adapt existing .btn from ../website/src/index.css after approval | Default, hover, visible keyboard focus | Give the main landing action strongest emphasis; no loading state for this local navigation example. |
+| EventMetadata | Adapt the existing hero-list label/value pattern | Long text and narrow layout | Present date and city consistently; values must wrap without clipping. |
+| PrototypeNotice | Create only if no suitable notice is found in the authorized sources | Default, narrow layout | Keep the fictional/demo disclosure visible; do not hide it on mobile. |
+| EventHeader and EventHero | Compose approved primitives and layout rules | Desktop and mobile arrangements | Do not automatically turn every one-off section into a generic component. |
+
+A Card, Input, or Badge may be needed later, but is not mandatory for this first slice. Add it only when a reviewed requirement justifies it. Record actual library/component names and source links after inspection; no Figma assets are claimed here.
+
+## 5. Reusable assets and specimen
+
+HTML target: one shared stylesheet with semantic CSS custom properties and reusable component classes, a specimen HTML page, and a landing prototype importing that same stylesheet. Use semantic markup, not a separate set of copied inline styles per page.
+Figma target: suitable library instances or local native components/variants, shared variables, and an editable specimen frame. The landing prototype uses instances/variables from those foundations rather than detached duplicates.
+
+The specimen must display tokens, typography, approved patterns, relevant states, usage rules, and long-content/narrow-width cases. Show focus/hover behavior in HTML where applicable; label Figma representations as annotated states, not runtime tests.
+
+Source of truth: identify the actual shared stylesheet or actual Figma component/variable set when created. Matching names across Figma and code do not synchronize them. A change requires an explicit mapping and review of affected usages; automatic sync is not part of this exercise.
+Do not publish a shared library or alter unrelated brand assets as part of this handoff.
+
+## 6. Interaction boundaries
+
+HTML: activating a link to an unbuilt route shows an accessible prototype explanation and names the intended destination. Do not collect or persist registration data.
+Figma: annotate intended destinations. Native frames and screenshots are visual artifacts, not proof of working navigation or form behavior. Only claim click-through connections that were created and tested.
+These prototype limitations do not change the approved application's requirements.
+
+## 7. Artifact and review record
+
+Foundation assets: not created by this example document; replace with actual source references.
+Specimen reference: not generated; replace with the actual specimen path or frame link.
+Prototype reference: not generated; replace with the actual entry-file path or frame links.
+Desktop/mobile evidence: not captured for a conference system or prototype in this lesson package.
+Review record: list each check as passed, failed, or not run, with evidence. Review specimen and prototype together for source reuse, relevant states, contrast, legibility, resizing, and path-appropriate keyboard behavior. Figma visual checks cannot prove browser accessibility.
+Refinement example: a long primary-action label exposes mobile spacing problems. Propose a shared-rule change, identify affected usages, obtain approval, and update specimen plus prototype together. Do not fix only one instance with an unrelated override.
+Outstanding work: inspect sources, approve inventory and target, create assets and specimen, apply them in the prototype, verify, refine, and obtain designer approval.
+
+## 8. Handoff
+
+After approval, save the actual DESIGN.md next to the project's approved SPEC.md in the agreed location. Include asset, specimen, and prototype references plus usage and state guidance. Keep this teaching example unchanged.
+Next: Phase 4 planning. Use the spec and reviewed starter system to scope implementation tickets. Full application routes, real registration, deployment, shared-library publishing, and production governance remain separate work.</pre></div></details>
+        <div class="prompt-bar"><a class="source-link" href="DESIGN.md" download>Download example DESIGN.md</a><button type="button" class="btn btn--small" data-copy="expected-design" aria-describedby="design-copy-status" hidden>Copy example handoff</button></div><p class="copy-status" id="design-copy-status" role="status"></p>
+      </section>
+      <section class="section" id="checklist" aria-labelledby="checklist-title">
+        <div class="section-intro"><div><div class="eyebrow">06 · Review before handoff</div><h2 id="checklist-title">Approve the system in use.</h2></div><p>Use these checks against your actual assets, specimen, and prototype. They record your review; they do not analyze files, call Figma, grant implementation permission, or approve the design for you.</p></div>
+        <div class="flow-detail"><fieldset class="checklist"><legend>Confirm your starter system and prototype are ready</legend>
+          <label><input type="checkbox">The spec and initial landing-page slice are approved.</label>
+          <label><input type="checkbox">Existing brand, tokens, and components were inspected; reuse/adapt/create decisions have reasons.</label>
+          <label><input type="checkbox">The minimal inventory, visual direction, path, and exact write scope were approved before edits.</label>
+          <label><input type="checkbox">Actual reusable assets and a specimen exist with relevant states and usage guidance.</label>
+          <label><input type="checkbox">The landing prototype uses those same sources, not independently copied styles.</label>
+          <label><input type="checkbox">Specimen and prototype were reviewed at desktop/mobile sizes with honest accessibility and interaction limits.</label>
+          <label><input type="checkbox">DESIGN.md points to actual assets and records limitations; no automatic Figma/code synchronization is claimed.</label>
+          <label><input type="checkbox">The designer approved the refined system and prototype; nothing was published or deployed without authorization.</label>
+        </fieldset><div class="flow-detail-right completion"><div class="eyebrow">Your review</div><progress id="review-progress" max="8" value="0" aria-label="Checklist completion" hidden></progress><p id="review-status" role="status">Check each item against your system and prototype.</p><h3 id="next-title">First, review the system and prototype.</h3><p>Carry the approved SPEC.md, reusable assets, specimen, prototype, and DESIGN.md into Phase 4 planning. Turn that agreement into small implementation tasks.</p><p class="muted">Selections last until you reload this page. <a href="../phase-4-plan/index.html">Continue to Phase 4 · Plan + Linear →</a></p><a class="source-link" href="#review-prompt-section">Return to the review prompt →</a></div></div>
+      </section>
+      <footer><div class="footer">
+        <div><h4>Design to Ship</h4><p>Phase 3 · Foundations in use.<br>Inspect, approve, create, review.</p></div>
+        <div><h4>Lesson materials</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="../skills/index.html">Skills · Matt Pocock’s examples</a></li><li><a href="LESSON.md">Facilitator script</a></li><li><a href="PROMPT.md">All five prompts</a></li><li><a href="DESIGN.md">Example starter-system handoff</a></li><li><a href="../.devin/skills/design-system-foundations/SKILL.md">Foundations skill source</a></li><li><a href="../phase-2-spec/index.html">Back to Phase 2 · Spec</a></li></ul></div>
+        <div><h4>Primary references</h4><ul><li><a href="https://modelcontextprotocol.io/docs/learn/architecture">MCP architecture</a></li><li><a href="https://developers.figma.com/docs/figma-mcp-server/">Figma MCP capabilities</a></li><li><a href="https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/">Official Figma setup</a></li></ul></div>
+      </div><div class="footer-bottom"><span>Idea → Spec → Design system + prototype → Plan → Build</span><span>Plain HTML · Shared website styles · No React</span></div></footer>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const source = document.getElementById(button.dataset.copy);
+        const status = document.getElementById(button.getAttribute('aria-describedby'));
+        button.disabled = true;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          status.textContent = 'Copied. Replace placeholders and confirm the scope before using.';
+        } catch {
+          const disclosure = source.closest('details');
+          if (disclosure) disclosure.open = true;
+          source.focus();
+          const range = document.createRange();
+          range.selectNodeContents(source);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C to copy.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    const checks = [...document.querySelectorAll('.checklist input')];
+    const progress = document.getElementById('review-progress');
+    progress.hidden = false;
+    const updateReview = () => {
+      const completed = checks.filter(check => check.checked).length;
+      progress.value = completed;
+      document.getElementById('review-status').textContent = `${completed} of ${checks.length} checks confirmed`;
+      document.getElementById('next-title').textContent = completed === checks.length
+        ? 'Ready for Phase 4: Plan.'
+        : 'First, review the system and prototype.';
+    };
+    checks.forEach(check => check.addEventListener('change', updateReview));
+    updateReview();
+  </script>
+</body>
+</html>

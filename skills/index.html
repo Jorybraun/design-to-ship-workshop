@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="A designer-friendly chapter on agent skills, using Matt Pocock's published workflows to explain interviews, specifications, prototypes, and task planning.">
+  <title>Skills · Design to Ship</title>
+  <link rel="icon" type="image/svg+xml" href="../website/public/cognition-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../website/src/index.css">
+  <style>
+    :root { --ink-soft: rgba(26,26,26,.72); --ink-faint: rgba(26,26,26,.66); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    section, article { scroll-margin-top: 20px; }
+    .skip-link { position: absolute; left: 20px; top: -100px; padding: 12px; background: var(--white); z-index: 1; }
+    .skip-link:focus { top: 12px; }
+    .pad { padding: var(--rhythm); }
+    .hero-grid > *, .flow-detail > *, .compare > *, .skill-grid > * { min-width: 0; }
+    .hero-left h1 { max-width: 12ch; }
+    .hero-links a { gap: 16px; }
+    .chapter-label { padding: 14px var(--rhythm); border-bottom: 1px solid var(--hairline); background: var(--white); }
+    .chapter-label a, .source-link { text-underline-offset: 4px; }
+    .source-link { font-size: .85rem; }
+    .section-intro h2 { max-width: 18ch; }
+    .compare-cell h3 { margin: 12px 0; }
+    .skill-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--hairline); }
+    .skill-card { padding: var(--rhythm); border-right: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+    .skill-card:nth-child(even) { border-right: 0; }
+    .skill-card h3 { margin: 12px 0; overflow-wrap: anywhere; }
+    .skill-card p + p { margin-top: 12px; }
+    .skill-card .source-link { display: inline-block; margin-top: 16px; }
+    .notes { display: flex; flex-direction: column; gap: 24px; }
+    .notes h3 { margin: 12px 0; }
+    .notes ul { padding-left: 20px; }
+    .walkthrough { padding: 0; }
+    details { border-bottom: 1px solid var(--hairline); }
+    summary { padding: var(--rhythm); cursor: pointer; font-weight: 500; }
+    summary::marker, details[open] > summary { color: var(--accent); }
+    .detail-body { padding: 0 var(--rhythm) var(--rhythm); }
+    .detail-body p + p { margin-top: 14px; }
+    .script-step + .script-step { margin-top: 20px; }
+    .script-step .eyebrow { margin-bottom: 8px; }
+    pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .86rem; line-height: 1.65; }
+    .detail-body pre { margin-top: 12px; padding: 16px; background: var(--ground); border: 1px solid var(--hairline); }
+    .prompt-block { background: var(--ground-2); }
+    .prompt-bar { flex-wrap: wrap; gap: 12px; }
+    .copy-status { min-height: 1.6em; font-size: .85rem; padding: 0 var(--rhythm) 12px; color: var(--ink-soft); }
+    .notice { padding: var(--rhythm); background: var(--ground-2); border-top: 1px solid var(--hairline); }
+    .sources { margin: 0; padding: var(--rhythm) var(--rhythm) var(--rhythm) 42px; }
+    .sources li { padding: 8px 0; }
+    .sources a, .sources code { overflow-wrap: anywhere; }
+    .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 620px) {
+      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
+      .nav-links a { padding: 0 8px; font-size: .85rem; }
+      .skill-grid { grid-template-columns: 1fr; }
+      .skill-card { border-right: 0; }
+      .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
+      .hero-list li span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to chapter</a>
+  <header class="outer"><nav class="nav container" aria-label="Chapter navigation">
+    <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" width="22" height="22" alt="">Design to Ship</a><span class="nav-spacer"></span>
+    <ul class="nav-links"><li><a href="#meaning">Skills</a></li><li><a href="#matt">Examples</a></li><li><a href="#exercise">Try it</a></li><li><a href="#inspect">Inspect</a></li></ul>
+  </nav></header>
+  <main class="outer" id="main"><div class="container">
+    <div class="chapter-label eyebrow">Workshop companion · Introduce during <a href="../phase-2-spec/index.html">Phase 2</a></div>
+    <section class="hero" aria-labelledby="chapter-title"><div class="hero-grid">
+      <div class="hero-left"><div class="eyebrow">Skills · Methods worth reusing</div><h1 id="chapter-title">A method.<br>Not a magic role.</h1><p class="lead">Turn a useful way of working into a reusable skill. Explore Matt Pocock’s examples, then practice a small review loop on our conference specification.</p></div>
+      <div class="hero-right"><div class="pad"><ul class="hero-list"><li><span>Learn</span><span>When to use and inspect a skill</span></li><li><span>Reference</span><span>Matt Pocock’s published skills</span></li><li><span>Practice</span><span>Grill → decide → revise</span></li><li><span>Boundary</span><span>No automatic installation or approval</span></li></ul></div><p class="hero-statement">The useful part is the <em>procedure</em>, not the job title.</p><div class="hero-links"><a class="hero-link hero-link--primary" href="#exercise">Try a spec review <span aria-hidden="true">→</span></a><a class="hero-link" href="#matt">Explore the examples <span aria-hidden="true">→</span></a></div></div>
+    </div><p class="notice">This chapter summarizes upstream skills and clearly labels our workshop adaptations. It does not install Matt’s collection or run any of its file, tracker, or code actions.</p></section>
+    <section class="section" id="meaning" aria-labelledby="meaning-title">
+      <div class="section-intro"><div><div class="eyebrow">01 · What a skill contributes</div><h2 id="meaning-title">Package the process.</h2></div><p>A skill bundles reusable instructions and may include supporting files or scripts. The agent reads that guidance in context. It is not a new model, a credential, or a guarantee of a correct result.</p></div>
+      <div class="compare"><div class="compare-cell"><div class="eyebrow">Perspective only</div><pre>Act as a senior product manager.
+Review my specification.</pre><ul><li>Suggests a viewpoint</li><li>Doesn’t specify what to inspect</li><li>Doesn’t define decisions, outputs, or stopping rules</li></ul></div><div class="compare-cell"><div class="eyebrow">An explicit method</div><pre>Compare the specification with the reviewed brief.
+Find a consequential ambiguity.
+Ask me to decide; propose replacement wording.
+Stop before editing or implementation.</pre><ul><li>Names the inputs and checks</li><li>Separates facts from human decisions</li><li>Defines the output and permission boundary</li></ul></div></div>
+      <div class="flow-detail"><div class="flow-detail-left notes"><div><div class="eyebrow">Say to the room</div><h3>First a prompt, then a reusable method.</h3><p>“If the same review instructions help us repeatedly, we can package them as a skill. We still provide this project’s context, and we still approve the result.”</p></div><div><div class="eyebrow">Three different things</div><p>A prompt is the current request. A skill is a reusable method. MCP is a standard for connecting to exposed tools and context. A skill may instruct the agent to use MCP tools; it does not provide their credentials or permissions.</p></div></div><div class="flow-detail-right notes"><div><div class="eyebrow">Inside a skill</div><h3>Read the instructions, not just the name.</h3><p>Look for inputs, steps, dependencies, outputs, side effects, and stop conditions. Inspect scripts and referenced files too. A short wrapper can call a much more capable skill.</p></div><div><div class="eyebrow">Our local example</div><p><a href="../.devin/skills/design-system-foundations/SKILL.md">design-system-foundations</a> is our workshop-authored skill, not one of Matt’s. It proposes a minimal inventory, waits for approval, creates authorized assets and a specimen, then stops for review.</p></div></div></div>
+    </section>
+    <section class="section" id="matt" aria-labelledby="matt-title">
+      <div class="section-intro"><div><div class="eyebrow">02 · Matt Pocock’s examples</div><h2 id="matt-title">Small skills. Different jobs.</h2></div><p>Matt describes his collection as small, adaptable, and composable. These summaries are based on the linked source files at a pinned revision—not an installation guide or a claim that every skill fits this workshop unchanged.</p></div>
+      <div class="skill-grid">
+        <article class="skill-card"><div class="eyebrow">Interview · Phases 1–2</div><h3>grill-me → grilling</h3><p><code>grill-me</code> is a user-invoked wrapper that calls <code>grilling</code>. The underlying method explores a decision tree and asks rounds of questions whose prerequisites are settled, recommending an answer for each.</p><p><strong>Important difference:</strong> the current method can ask several independent questions in one round. It is not our workshop’s one-question-at-a-time adaptation. It delegates fact-finding and waits for the user’s decisions and final confirmation.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/productivity/grilling/SKILL.md">Read the grilling method →</a></article>
+        <article class="skill-card"><div class="eyebrow">Interview + documentation · Optional</div><h3>grill-with-docs</h3><p>Calls both <code>grilling</code> and <code>domain-modeling</code>. Its declared purpose includes sharpening shared terminology and creating domain/decision documentation as the conversation proceeds.</p><p><strong>Inspect before use:</strong> this is not simply a read-only critique. Review the dependency instructions and authorized documentation locations before using it in a live repo.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/grill-with-docs/SKILL.md">Read the wrapper and follow its dependencies →</a></article>
+        <article class="skill-card"><div class="eyebrow">Synthesize · Phase 2</div><h3>to-spec</h3><p>Turns the current conversation and codebase understanding into a specification. It explicitly avoids a new discovery interview, although it asks the user to confirm proposed testing seams.</p><p><strong>Side effect:</strong> it publishes to the configured issue tracker and applies a ready-for-agent label. Our lesson instead presents a draft and waits for approval before saving or publishing. These are different behaviors.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/to-spec/SKILL.md">Read to-spec →</a></article>
+        <article class="skill-card"><div class="eyebrow">Explore a question · Phase 3</div><h3>prototype</h3><p>Uses a throwaway prototype to answer a question. Its logic branch produces a single shareable HTML file; its UI branch explores several different visual alternatives. Each branch has a supporting instruction file.</p><p><strong>Different purpose:</strong> upstream deliberately skips tests and abstraction for disposable exploration. Our design-system exercise preserves reusable foundations and verifies them. Do not confuse a throwaway experiment with the system you plan to keep.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/prototype/SKILL.md">Read prototype and its branch references →</a></article>
+        <article class="skill-card"><div class="eyebrow">Plan deliverable slices · Phase 4</div><h3>to-tickets</h3><p>Breaks a plan into small, end-to-end tickets with explicit blockers. A slice should demonstrate a behavior, rather than only finish a technical layer. It asks the user to review granularity and dependencies before publishing.</p><p><strong>Example:</strong> “Filter talks by track, including empty results and checks,” rather than separate unconnected tickets for a button, data function, and test. Upstream supports configured local files or a real tracker.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/to-tickets/SKILL.md">Read to-tickets →</a></article>
+        <article class="skill-card"><div class="eyebrow">Existing codebase review · Later</div><h3>improve-codebase-architecture</h3><p>Inspects an existing codebase for architectural friction, presents candidates in an HTML report, and interviews the user about the selected candidate using supporting design/domain skills.</p><p><strong>Not a generic new-project planner:</strong> it has codebase and documentation expectations, writes a report, and can update domain documentation. For our beginner build, introduce only when there is actual code and a concrete design problem.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/improve-codebase-architecture/SKILL.md">Read improve-codebase-architecture →</a></article>
+      </div>
+      <p class="notice"><strong>Two workflows, not one attribution.</strong> Matt’s tools can support interview → spec synthesis → tickets. Our teaching loop is draft → challenge → revise → explicitly approve, with slower questioning and no automatic tracker publication. Those guardrails are our adaptation.</p>
+    </section>
+    <section class="section" id="exercise" aria-labelledby="exercise-title">
+      <div class="section-intro"><div><div class="eyebrow">03 · A worked workshop example</div><h2 id="exercise-title">Grill one decision.</h2></div><p>Use the DesignCraft spec as a teaching example. The schedule has two empty messages but does not define which takes precedence. We can resolve that without implementing anything.</p></div>
+      <div class="flow-detail"><div class="flow-detail-left walkthrough">
+        <details open><summary>01 / Say why we are reviewing</summary><div class="detail-body"><div class="eyebrow">Say</div><p>“A polished spec can still hide decisions. We’ll challenge one ambiguity, decide what we mean, and turn the answer into clearer wording.”</p><p><a href="../phase-2-spec/SPEC.md">Open the example specification</a> and find I2. For a real project, use the actual reviewed brief and draft.</p></div></details>
+        <details><summary>02 / Ask a consequential question</summary><div class="detail-body"><div class="eyebrow">Example agent question</div><pre>If the entire schedule is empty while Product is selected, should visitors see “Schedule coming soon” or “No talks in this track yet”?
+
+I recommend checking for an empty dataset first. The track message is useful only when talks exist but none match. Is that the intended behavior?</pre><p>This asks for a product decision. The agent should look up existing behavior where it can, not ask the participant to discover facts already in the repo.</p></div></details>
+        <details><summary>03 / Decide, then revise</summary><div class="detail-body"><div class="eyebrow">Your example answer</div><pre>Yes. Show “Schedule coming soon” when there are no talks at all. Only use the track-specific message if other talks exist.</pre><div class="script-step"><div class="eyebrow">Proposed wording</div><pre>Check the whole dataset first:
+- No talks → “Schedule coming soon.”
+- Talks exist but none match the selected track → “No talks in this track yet.”</pre></div><p>Ask the agent to include the same precedence in the acceptance criteria. Review the proposed change before applying it.</p></div></details>
+        <details><summary>04 / Stop without pretending the spec is perfect</summary><div class="detail-body"><div class="eyebrow">Check</div><p>The ambiguity is resolved, the decision is recorded, and related requirements agree. Continue with another consequential issue, or pause with an explicit list of blockers. The reviewer’s confidence is not human approval or evidence that the application works.</p></div></details>
+      </div><div class="flow-detail-right notes"><div><div class="eyebrow">Matt’s method</div><h3>Ask what can be decided now.</h3><p>His current grilling method explores independent questions in rounds. Dependent questions wait until their prerequisites are settled.</p></div><div><div class="eyebrow">Our teaching adaptation</div><h3>One question, one visible change.</h3><p>We slow the process down so the room can follow the reasoning. We add explicit boundaries: no writes, no implementation, and a review record before approval.</p></div><div><div class="eyebrow">Expected output</div><h3>A decision, not more ceremony.</h3><p>“Empty dataset takes precedence” plus replacement wording, the affected acceptance criterion, and any remaining blockers.</p></div></div></div>
+      <div class="prompt-block"><pre id="review-prompt" tabindex="0" aria-label="Workshop-adapted spec review prompt">Use a structured interview to challenge this draft specification.
+This is a workshop adaptation, not a verbatim Matt Pocock skill.
+
+Reviewed brief: [paste or attach the brief].
+Draft specification: [paste or attach the draft].
+
+Read the references first. If either is missing, ask for it. Look up facts available in the supplied project context rather than asking me to find them.
+
+Find the most consequential ambiguity, contradiction, unsupported assumption, or unnecessary scope. Cite the requirement. Ask one focused question at a time, explain why it matters, and recommend an option without deciding for me. Do not ask questions the documents already answer.
+
+After I confirm a decision, propose precise replacement wording and identify related acceptance criteria that need to change. Keep a short record of confirmed decisions and remaining blockers. Do not edit files, publish issues, or implement anything.
+
+Stop when no identified blockers remain or when I pause the review. Request explicit human approval of the revised draft; do not claim the review proves it is flawless.</pre></div>
+      <div class="prompt-bar"><span>Our copyable adaptation · no installation required</span><button type="button" class="btn btn--small" data-copy="review-prompt" aria-describedby="copy-status" hidden>Copy workshop review prompt</button></div><p class="copy-status" id="copy-status" role="status"></p>
+    </section>
+    <section class="section" id="inspect" aria-labelledby="inspect-title">
+      <div class="section-intro"><div><div class="eyebrow">04 · Before installing or adapting</div><h2 id="inspect-title">Read the fine print.</h2></div><p>A skill is instructions that may direct real actions. Read the full method and dependencies. Do not install a collection just because the first command sounds useful.</p></div>
+      <div class="flow-detail"><div class="flow-detail-left notes"><div><div class="eyebrow">Inspect</div><ul><li>Who wrote it, which revision, and what license applies?</li><li>Does it invoke other skills, scripts, or referenced instructions?</li><li>Will it write files, publish issues, run code, commit, or access a service?</li><li>Does it stop before the action you want to approve?</li><li>What inputs and project configuration does it expect?</li></ul></div><div><div class="eyebrow">For Matt’s engineering collection</div><p><code>setup-matt-pocock-skills</code> configures tracker and documentation conventions used by other engineering skills. It can update repository instructions and create configuration documents. Inspect that workflow too; do not run setup as an invisible prerequisite.</p><a class="source-link" href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/setup-matt-pocock-skills/SKILL.md">Read the setup skill →</a></div></div><div class="flow-detail-right notes"><div><div class="eyebrow">Adapt deliberately</div><p>Matt’s source uses fields such as <code>disable-model-invocation</code>. Our Devin project uses documented <code>triggers: [user]</code> for user-only skills. Host support, skill discovery, tool names, and permission handling vary; do not assume a copied header enforces the same behavior everywhere.</p></div><div><div class="eyebrow">Keep the original distinct</div><p>Pin the reviewed version and label your changes. The inspected repository uses the MIT license; retain the required notice when copying substantial material. This chapter paraphrases the methods and links to the original files.</p></div><div><div class="eyebrow">For this workshop</div><p>Start with the copyable review exercise. If adopting upstream skills later, select and inspect their full dependency set, confirm host compatibility and write scope, then install intentionally. No upstream skills have been installed by this chapter.</p></div></div></div>
+    </section>
+    <section class="section" id="sources" aria-labelledby="sources-title">
+      <div class="section-intro"><div><div class="eyebrow">05 · Primary sources</div><h2 id="sources-title">Read the actual skills.</h2></div><p>Inspected 5 September 2026 at revision <code>3cca18b</code>. Links are pinned because these methods evolve. Upstream descriptions and our workshop recommendations are separate.</p></div>
+      <ol class="sources">
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/README.md">Matt Pocock · Skills For Real Engineers: purpose, setup, and catalog</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/productivity/grill-me/SKILL.md">grill-me: user-facing wrapper</a> · <a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/productivity/grilling/SKILL.md">grilling: underlying method</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/grill-with-docs/SKILL.md">grill-with-docs: composition with domain-modeling</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/to-spec/SKILL.md">to-spec: synthesis and tracker publication</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/prototype/SKILL.md">prototype: throwaway logic and UI experiments</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/to-tickets/SKILL.md">to-tickets: vertical slices and blockers</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/improve-codebase-architecture/SKILL.md">improve-codebase-architecture: survey and candidate review</a></li>
+        <li><a href="https://github.com/mattpocock/skills/blob/3cca18b368ae95cdbdebbff572ccafa662551015/LICENSE">MIT license and attribution terms</a></li>
+      </ol>
+    </section>
+    <footer><div class="footer"><div><h4>Design to Ship</h4><p>Skills chapter · Understand the method before you automate it.</p></div><div><h4>Continue the workshop</h4><ul><li><a href="https://github.com/Jorybraun/design-to-ship-workshop">Workshop source on GitHub</a></li><li><a href="../phase-6-ship/index.html">Phase 6 · Ship + handoff</a></li><li><a href="../phase-1-idea/index.html">Phase 1 · Idea</a></li><li><a href="../phase-2-spec/index.html">Phase 2 · Specification</a></li><li><a href="../phase-3-prototype/index.html">Phase 3 · Design system</a></li><li><a href="../phase-4-plan/index.html">Phase 4 · Plan + Linear</a></li><li><a href="../phase-5-build/index.html">Phase 5 · Context, handoff + build</a></li><li><a href="../phase-4-plan/index.html#features">Workshop Devin feature map</a></li></ul></div><div><h4>Our project-local method</h4><ul><li><a href="../.devin/skills/design-system-foundations/SKILL.md">Inspect design-system-foundations</a></li><li><a href="../phase-3-prototype/PROMPT.md">Use its copyable equivalent</a></li></ul></div></div><div class="footer-bottom"><span>Source examples: Matt Pocock · Workshop adaptations labeled</span><span>Plain HTML · No automatic installs</span></div></footer>
+  </div></main>
+  <script>
+    const button = document.querySelector('[data-copy]');
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      const source = document.getElementById(button.dataset.copy);
+      const status = document.getElementById('copy-status');
+      button.disabled = true;
+      try {
+        await navigator.clipboard.writeText(source.textContent.trim());
+        status.textContent = 'Copied. Supply your brief and specification before using.';
+      } catch {
+        source.focus();
+        const range = document.createRange();
+        range.selectNodeContents(source);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        status.textContent = 'Automatic copy is unavailable. Text selected: press Command+C or Ctrl+C.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
