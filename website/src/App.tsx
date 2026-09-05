@@ -270,7 +270,7 @@ export default function App() {
               </div>
               <div className="flow-detail-right">
                 <div className="eyebrow" style={{ marginBottom: 12 }}>Artifact</div>
-                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.86rem', lineHeight: 1.65, margin: 0 }}>{FLOW[flow].artifact}</pre>
+                <pre>{FLOW[flow].artifact}</pre>
                 <div style={{ marginTop: 20 }}>
                   <button className="btn btn--secondary btn--small" onClick={() => copy(FLOW[flow].artifact, `flow-${flow}`)}>
                     {copied === `flow-${flow}` ? 'Copied' : 'Copy'}

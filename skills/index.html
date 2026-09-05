@@ -54,9 +54,18 @@
     .sources li { padding: 8px 0; }
     .sources a, .sources code { overflow-wrap: anywhere; }
     .footer-bottom { flex-wrap: wrap; gap: 12px; }
+    .phase-path { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0; border-bottom: 1px solid var(--hairline); }
+    .phase-path li { flex: 1; min-width: 120px; padding: 14px var(--rhythm); border-right: 1px solid var(--hairline); font-family: var(--font-mono); font-size: .78rem; color: var(--ink-soft); }
+    .phase-path li:last-child { border-right: 0; }
+    .phase-path [aria-current] { background: var(--white); color: var(--accent); box-shadow: inset 0 -3px var(--accent); }
+    .phase-path a { text-underline-offset: 4px; }
     @media (max-width: 620px) {
-      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
-      .nav-links a { padding: 0 8px; font-size: .85rem; }
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: .85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
+      .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
       .skill-grid { grid-template-columns: 1fr; }
       .skill-card { border-right: 0; }
       .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
@@ -71,10 +80,19 @@
 <body>
   <a class="skip-link" href="#main">Skip to chapter</a>
   <header class="outer"><nav class="nav container" aria-label="Chapter navigation">
-    <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" width="22" height="22" alt="">Design to Ship</a><span class="nav-spacer"></span>
+    <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" width="22" height="22" alt="">Design to Ship</a><span class="nav-spacer"></span>
     <ul class="nav-links"><li><a href="#meaning">Skills</a></li><li><a href="#matt">Examples</a></li><li><a href="#exercise">Try it</a></li><li><a href="#inspect">Inspect</a></li></ul>
   </nav></header>
   <main class="outer" id="main"><div class="container">
+    <ol class="phase-path" aria-label="Workshop phases">
+      <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+      <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+      <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+      <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+      <li><a href="../phase-5-build/index.html">05 / Build</a></li>
+      <li><a href="../phase-6-ship/index.html">06 / Ship</a></li>
+      <li aria-current="step">Skills</li>
+    </ol>
     <div class="chapter-label eyebrow">Workshop companion · Introduce during <a href="../phase-2-spec/index.html">Phase 2</a></div>
     <section class="hero" aria-labelledby="chapter-title"><div class="hero-grid">
       <div class="hero-left"><div class="eyebrow">Skills · Methods worth reusing</div><h1 id="chapter-title">A method.<br>Not a magic role.</h1><p class="lead">Turn a useful way of working into a reusable skill. Explore Matt Pocock’s examples, then practice a small review loop on our conference specification.</p></div>

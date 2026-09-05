@@ -54,8 +54,11 @@
     .sources li { padding: 8px 0; }
     .footer-bottom { flex-wrap: wrap; gap: 12px; }
     @media (max-width: 620px) {
-      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
-      .nav-links a { padding: 0 8px; font-size: .85rem; }
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: .85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
       .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
       .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
       .hero-list li span:last-child { text-align: left; }
@@ -69,11 +72,18 @@
 <body>
   <a class="skip-link" href="#main">Skip to lesson</a>
   <header class="outer"><nav class="nav container" aria-label="Lesson navigation">
-    <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
+    <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
     <ul class="nav-links"><li><a href="#walkthrough">Practice</a></li><li><a href="#deployment">Deploy</a></li><li><a href="#handoff">Handoff</a></li><li><a href="#prompts">Prompts</a></li></ul>
   </nav></header>
   <main class="outer" id="main"><div class="container">
-    <ol class="phase-path" aria-label="Workshop phases"><li><a href="../phase-1-idea/index.html">01 / Idea</a></li><li><a href="../phase-2-spec/index.html">02 / Spec</a></li><li><a href="../phase-3-prototype/index.html">03 / Design system</a></li><li><a href="../phase-4-plan/index.html">04 / Plan</a></li><li><a href="../phase-5-build/index.html">05 / Build + review</a></li><li aria-current="step">06 / Ship + handoff</li></ol>
+    <ol class="phase-path" aria-label="Workshop phases">
+      <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+      <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+      <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+      <li><a href="../phase-4-plan/index.html">04 / Plan</a></li>
+      <li><a href="../phase-5-build/index.html">05 / Build</a></li>
+      <li aria-current="step">06 / Ship</li>
+    </ol>
     <section class="hero" aria-labelledby="lesson-title"><div class="hero-grid">
       <div class="hero-left"><div class="eyebrow">Phase 06 · Ship + handoff</div><h1 id="lesson-title">Ship the reviewed build.<br>Leave a reliable handoff.</h1><p class="lead">Choose the exact source and artifact. Approve one public target. Verify what visitors receive and give the next maintainer a usable recovery path.</p></div>
       <div class="hero-right"><div class="pad"><ul class="hero-list"><li><span>Bring</span><span>Reviewed build + human owner</span></li><li><span>Separate</span><span>Source repo ≠ deployed artifact</span></li><li><span>Prepare</span><span>Public scope + rollback</span></li><li><span>Verify</span><span>Actual hosted URL + evidence</span></li><li><span>Leave with</span><span>Maintainer handoff or blockers</span></li></ul></div><p class="hero-statement">Publication is <em>a decision, not a side effect.</em></p><div class="hero-links"><a class="hero-link hero-link--primary" href="#walkthrough">Start the release review <span aria-hidden="true">→</span></a><a class="hero-link" href="#checklist">Review the gate <span aria-hidden="true">→</span></a></div></div>

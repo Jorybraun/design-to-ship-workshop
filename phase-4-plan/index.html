@@ -62,8 +62,11 @@
     .sources li { padding: 8px 0; }
     .footer-bottom { flex-wrap: wrap; gap: 12px; }
     @media (max-width: 620px) {
-      .nav-links { display: grid; grid-template-columns: repeat(4, 1fr); }
-      .nav-links a { padding: 0 8px; font-size: .85rem; }
+      .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links li { min-width: 0; }
+      .nav-links a { height: auto; min-height: 46px; padding: 12px 8px; font-size: .85rem; white-space: normal; border-left: 0; border-top: 1px solid var(--hairline); }
+      .nav-links li:nth-child(-n+2) a { border-top: 0; }
+      .nav-links li:nth-child(odd) a { border-right: 1px solid var(--hairline); }
       .phase-path li { min-width: 33%; padding: 12px; font-size: .7rem; }
       .hero-list li { flex-wrap: wrap; gap: 6px 16px; }
       .hero-list li span:last-child { text-align: left; }
@@ -79,11 +82,18 @@
 <body>
   <a class="skip-link" href="#main">Skip to lesson</a>
   <header class="outer"><nav class="nav container" aria-label="Lesson navigation">
-    <a class="nav-brand" href="../phase-1-idea/index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
+    <a class="nav-brand" href="../index.html"><img src="../website/public/cognition-mark.svg" alt="" width="22" height="22">Design to Ship</a><span class="nav-spacer"></span>
     <ul class="nav-links"><li><a href="#walkthrough">Practice</a></li><li><a href="#features">Features</a></li><li><a href="#linear">Linear</a></li><li><a href="#prompts">Prompts</a></li></ul>
   </nav></header>
   <main class="outer" id="main"><div class="container">
-    <ol class="phase-path" aria-label="Workshop phases"><li><a href="../phase-1-idea/index.html">01 / Idea</a></li><li><a href="../phase-2-spec/index.html">02 / Spec</a></li><li><a href="../phase-3-prototype/index.html">03 / Design system</a></li><li aria-current="step">04 / Plan</li><li><a href="../phase-5-build/index.html">05 / Build + review</a></li></ol>
+    <ol class="phase-path" aria-label="Workshop phases">
+      <li><a href="../phase-1-idea/index.html">01 / Idea</a></li>
+      <li><a href="../phase-2-spec/index.html">02 / Spec</a></li>
+      <li><a href="../phase-3-prototype/index.html">03 / Design</a></li>
+      <li aria-current="step">04 / Plan</li>
+      <li><a href="../phase-5-build/index.html">05 / Build</a></li>
+      <li><a href="../phase-6-ship/index.html">06 / Ship</a></li>
+    </ol>
     <section class="hero" aria-labelledby="lesson-title"><div class="hero-grid">
       <div class="hero-left"><div class="eyebrow">Phase 04 · Planning + Linear</div><h1 id="lesson-title">Plan the work.<br>Then delegate.</h1><p class="lead">Choose a technical approach. Break it into small visitor-facing changes. Review the tickets before putting them in Linear—or asking Devin to build.</p></div>
       <div class="hero-right"><div class="pad"><ul class="hero-list"><li><span>Bring</span><span>Approved spec + reviewed design assets</span></li><li><span>Decide</span><span>Approach, slices, dependencies</span></li><li><span>Introduce</span><span>Plan mode + Linear MCP</span></li><li><span>Optional</span><span>Stacked PR demonstration</span></li><li><span>Leave with</span><span>A reviewed plan, not application code</span></li></ul></div><p class="hero-statement">A ticket is a <em>checkable outcome</em>, not a vague instruction.</p><div class="hero-links"><a class="hero-link hero-link--primary" href="#walkthrough">Start the trial run <span aria-hidden="true">→</span></a><a class="hero-link" href="#features">Devin feature map <span aria-hidden="true">→</span></a></div></div>

@@ -8,7 +8,7 @@ Source repository: [Jorybraun/design-to-ship-workshop](https://github.com/Jorybr
 
 ## Start here
 
-Open [Phase 1](phase-1-idea/index.html) in a browser after cloning or downloading the repository. Keep the folder structure intact: lesson pages share CSS and assets from `website/`. No build or dependency installation is needed for the lessons. Google Fonts requires a network connection; system fonts are the fallback.
+Open [`index.html`](index.html) in a browser after cloning or downloading the repository, then move through the phases. Keep the folder structure intact: lesson pages share CSS and assets from `website/`. No build or dependency installation is needed for the lessons. Google Fonts requires a network connection; system fonts are the fallback.
 
 | Phase | Lesson | Supporting materials |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ The [skills companion](skills/index.html) explains reusable methods and links to
 
 [Agent Prompting Foundations](agent-prompting-foundations.md) provides background reading and source citations.
 
-Known reference-site limitation: its older navigation and prompt-tab layout overflow at 375px. The standalone lesson pages have their own responsive checks. Resolve the reference layout and unified site packaging before treating the whole workshop as deployment-ready.
+The standalone lesson pages, the workshop home, and the React reference site have been checked at 375px and 1440px for horizontal overflow and responsive layout. The reference-site navigation and prompt tabs no longer overflow at 375px.
 
 To run the separate React reference website, from `website/`:
 
@@ -38,7 +38,9 @@ npm ci
 npm run dev
 ```
 
-To check that reference project, run `npm run lint` and `npm run build` from the same directory. Its build does **not** bundle the standalone lesson folders. Publishing the entire workshop requires a separately reviewed static package; do not upload the repository root or assume `website/dist/` includes the lessons.
+To check that reference project, run `npm run lint` and `npm run build` from the same directory. Its build does **not** bundle the standalone lesson folders.
+
+A reviewed static deployment package is assembled into `site/` by `scripts/build_site.py` (or run the equivalent copy manually). `site/` is excluded from the repository and has not been deployed. The package contains the plain HTML lessons, the workshop home, shared CSS/logos, and documentation. It does **not** include the React reference app build, `node_modules`, tests, local configuration, or unreviewed `.devin/` contents.
 
 ## Maintainer verification
 
